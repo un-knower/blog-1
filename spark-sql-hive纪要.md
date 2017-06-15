@@ -2,6 +2,8 @@
 title: spark-sql-hive纪要
 date: 2017-06-09 11:31:28
 tags:
+    - sparksql
+    - hive
 ---
 ## 环境准备
 1. 拷贝mysql-connector-java-x.y.z-bin.jar到{SPARK_HOME}/jars
