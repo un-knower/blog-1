@@ -4,8 +4,14 @@
 
 1. 安装数据集：all data sets are available in the ISLR library
 ```{r eval=FALSE, tidy=TRUE}
-#install.packages("ISLR")
-#install.packages("MASS")
+if (TRUE) {
+
+} else {
+install.packages("ISLR")
+install.packages("MASS")
+}
+
+
 ```
 
 
