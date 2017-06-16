@@ -4,6 +4,7 @@ date: 2017-06-09 11:29:28
 tags: 
     - 组件 
     - 实战
+    - oozie
 ---
 
 ### oozie安装
@@ -12,6 +13,7 @@ tags:
     1. cdh 等提供的cloudera manager 安装方式，文档简单具体；真他妈的猿性化
     2. 原生oozie官网的源码编译模式，文档清晰明了；真他妈的猿性化
     3. 自己公司的安装方法模式，chedan
+3. export OOZIE_URL=http://localhost:11000/oozie
 
 
 #### oozie功能测试
@@ -189,7 +191,142 @@ tags:
     ```
 3. 拷贝mysql-connector-java-x.y.z.jar到${OOZIE_HOME}/bin/libtools/
 4. 重启
+
+### oozie metadata
+
+#### oozie db
+1. BUNDLE_ACTIONS
+2. BUNDLE_JOBS
+3. COORD_ACTIONS
+4. COORD_JOBS
+5. WF_ACTIONS
+6. WF_JOBS
+7. OPENJPA_SEQUENCE_TABLE
+8. SLA_EVENTS
+9. SLA_REGISTRATION
+10. SLA_SUMMARY
+11. VALIDATE_CONN
+
+
+### oozie workflow ReRun
+
+#### Configs
+1. oozie.wf.application.path
+2. only one of following two configurations is mandatory(强制性). both should not be defined at the same time
+    1. oozie.wf.rerun.skip.nodes
+    Skip nodes are comma separated list of action names. They can be any action nodes including decision node.
+    2. oozie.wf.rerun.failnodes
+    The valid value of oozie.wf.rerun.failnodes is true or false.
+3. if secured hadoop version is used, the following two properties needs to be specified as well
+    1. mapreduce.jobtracker.kerberos.principal
+    2. dfs.namenode.kerberos.principal.
+4. configurations can be passed as -D param.
+5. eg:
+``` shell
+    oozie job -oozie http://localhost:11000/oozie -rerun 14-20090525161321-oozie-joe -Doozie.wf.rerun.skip.nodes=<>
+```
+
+
+#### Pre-Conditions
+1. workflow with id wfId should exist.
+2. workflow with id wfId should be in SUCCEEDED/KILLED/FAILED.
+3. if specified, nodes in the config oozie.wf.rerun.skip.nodes must be completed successfully.
+
+#### Rerun
+1. reloads the configs
+2. if no configuration is passed, existing coordinator/workflow configuration will be used. If configuration is passed then, it will be merged with existing workflow configuration. Input configuration will take the precedence
+3. currently there is no way to renove an existing configuration but only override by passing a different value in the input configuration.
+4. creates a new workflow instance with the same wfId
+5. Deletes the actions that are not skipped from the DB and copies data from old Workflow Instance to new one for skipped actions.
+6. Action handler will skip the nodes given in the config with the same exit transition as before.
+
+#### 实践
+
+
+### oozie restful
     
+
+
+
+## 作业调度
+
+
+
+
+### 借鉴
+#### oozie 重新提交作业
+在oozie的运行过程当中可能会出现错误，比如数据库连接不上，或者作业执行报错导致流程进入suspend或者killed状态，这个时候我们就要分析了，如果确实是数据或者是网络有问题，我们比如把问题解决了才可以重新运行作业。重新运行作业分两种情况，suspend状态和killed状态的，这两种状态是要通过不同的处理方式来处理的。
+1. suspend状态的我们可以用resume方式来在挂起的地方恢复作业，重新运行，或者是先杀掉它，让它进入killed状态，再进行重新运行
+``` java
+    public static void resumeJob(String jobId) {
+        try {
+            OozieClient wc = new OozieClient("http://192.168.1.133:11000/oozie");
+            wc.resume(jobId);
+        } catch (OozieClientException e) {
+            log.error(e);
+        }
+    }
+    public static void killJob(String jobId) {
+        try {
+            OozieClient wc = new OozieClient("http://192.168.1.133:11000/oozie");
+            wc.kill(jobId);
+        } catch (OozieClientException e) {
+            log.error(e);
+        }
+    }
+```
+2. killed状态的重新运行方法和它不一样，下面先贴出代码
+``` java
+    public static void reRunJob(String jobId, Properties conf) {
+        OozieClient wc = new OozieClient("http://192.168.1.133:11000/oozie");
+        try {
+            Properties properties = wc.createConfiguration();
+            properties.setProperty("nameNode", "hdfs://192.168.1.133:9000");
+            properties.setProperty("queueName", "default");
+            properties.setProperty("examplesRoot", "examples");
+            properties
+                    .setProperty("oozie.wf.application.path",
+                            "${nameNode}/user/cenyuhai/${examplesRoot}/apps/map-reduce");
+            properties.setProperty("outputDir", "map-reduce");
+            properties.setProperty("jobTracker", "http://192.168.1.133:9001");
+            properties.setProperty("inputDir",
+                    "/user/cenyuhai/examples/input-data/text");
+            properties.setProperty("outputDir",
+                    "/user/cenyuhai/examples/output-data/map-reduce");
+            properties.setProperty("oozie.wf.rerun.failnodes", "true");
+            //这两个参数只能选一个，第一个是重新运行失败的节点，第二个是需要跳过的节点
+            // properties.setProperty("oozie.wf.rerun.skip.nodes", ":start:");
+            wc.reRun(jobId, properties);
+        } catch (OozieClientException e) {
+            log.error(e);
+        }
+    }
+```
+
+#### oozie java api提交作业
+1. java demo
+``` java
+        OozieClient wc = new OozieClient("http://192.168.1.133:11000/oozie"); 
+        Properties conf = wc.createConfiguration(); 
+        //conf.setProperty(OozieClient.APP_PATH,"hdfs://192.168.1.133:9000"  + appPath); 
+        conf.setProperty("nameNode", "hdfs://192.168.1.133:9000"); 
+        conf.setProperty("queueName", "default"); 
+        conf.setProperty("examplesRoot", "examples"); 
+        conf.setProperty("oozie.wf.application.path", "${nameNode}/user/cenyuhai/${examplesRoot}/apps/map-reduce"); 
+        conf.setProperty("outputDir", "map-reduce"); 
+        conf.setProperty("jobTracker", "http://192.168.1.133:9001"); 
+        conf.setProperty("inputDir", input); 
+        conf.setProperty("outputDir", output);
+
+        try { 
+            String jobId = wc.run(conf); 
+            return jobId; 
+        } catch (OozieClientException e) { 
+            log.error(e); 
+        }
+```
+
+
 
 ### 问题集锦
 1. ERROR 1819 (HY000): Your password does not satisfy the current policy requirements
