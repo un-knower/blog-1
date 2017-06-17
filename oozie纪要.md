@@ -14,6 +14,8 @@ tags:
     2. 原生oozie官网的源码编译模式，文档清晰明了；真他妈的猿性化
     3. 自己公司的安装方法模式，chedan
 3. export OOZIE_URL=http://localhost:11000/oozie
+4. oozie job -config ./job.properties -run
+5. oozie job -kill buddle_id | coord_id | wf_id 
 
 
 #### oozie功能测试
@@ -201,6 +203,7 @@ tags:
 4. COORD_JOBS
 5. WF_ACTIONS
 6. WF_JOBS
+
 7. OPENJPA_SEQUENCE_TABLE
 8. SLA_EVENTS
 9. SLA_REGISTRATION
@@ -245,6 +248,190 @@ tags:
 
 ### oozie restful
     
+
+
+
+### Oozie Command Line Usage
+usage:
+      the env variable 'OOZIE_URL' is used as default value for the '-oozie' option
+      the env variable 'OOZIE_TIMEZONE' is used as default value for the '-timezone' option
+      the env variable 'OOZIE_AUTH' is used as default value for the '-auth' option
+      custom headers for Oozie web services can be specified using '-Dheader:NAME=VALUE'
+
+#### Oozie basic commands
+oozie help      : display usage
+oozie version   : show client version
+
+#### Oozie job operation commands
+oozie job <OPTIONS>           : job operations
+          -action <arg>         coordinator rerun/kill on action ids (requires -rerun/-kill);
+                                coordinator log retrieval on action ids (requires -log)
+          -allruns              Get workflow jobs corresponding to a coordinator action
+                                including all the reruns
+          -auth <arg>           select authentication type [SIMPLE|KERBEROS]
+          -change <arg>         change a coordinator or bundle job
+          -config <arg>         job configuration file '.xml' or '.properties'
+          -configcontent <arg>  job configuration
+          -coordinator <arg>    bundle rerun on coordinator names (requires -rerun)
+          -D <property=value>   set/override value for given property
+          -date <arg>           coordinator/bundle rerun on action dates (requires -rerun);
+                                coordinator log retrieval on action dates (requires -log)
+          -debug                Use debug mode to see debugging statements on stdout
+          -definition <arg>     job definition
+          -diff <arg>           Show diff of the new coord definition and properties with the
+                                existing one (default true)
+          -doas <arg>           doAs user, impersonates as the specified user
+          -dryrun               Dryrun a workflow (since 3.3.2) or coordinator (since 2.0)
+                                job without actually executing it
+          -failed               re-runs the failed workflow actions of the coordinator actions (requires -rerun)
+          -filter <arg>         <key><comparator><value>[;<key><comparator><value>]*
+                                (All Coordinator actions satisfying the filters will be retrieved).
+                                key: status or nominaltime
+                                comparator: =, !=, <, <=, >, >=. = is used as OR and others as AND
+                                status: values are valid status like SUCCEEDED, KILLED etc. Only = and != apply
+                                 for status.
+                                nominaltime: time of format yyyy-MM-dd'T'HH:mm'Z'
+          -ignore <arg>         change status of a coordinator job or action to IGNORED
+                                (-action required to ignore coord actions)
+          -info <arg>           info of a job
+          -interval <arg>       polling interval in minutes (default is 5, requires -poll)
+          -kill <arg>           kill a job (coordinator can mention -action or -date)
+          -len <arg>            number of actions (default TOTAL ACTIONS, requires -info)
+          -localtime            use local time (same as passing your time zone to -timezone).
+                                Overrides -timezone option
+          -log <arg>            job log
+          -errorlog <arg>       job error log
+          -auditlog <arg>       job audit log
+          -logfilter <arg>      job log search parameter. Can be specified as -logfilter
+                                opt1=val1;opt2=val1;opt3=val1. Supported options are recent,
+                                start, end, loglevel, text, limit and debug
+          -nocleanup            do not clean up output-events of the coordinator rerun
+                                actions (requires -rerun)
+          -offset <arg>         job info offset of actions (default '1', requires -info)
+          -oozie <arg>          Oozie URL
+          -order <arg>          order to show coord actions (default ascending order, 'desc'
+                                for descending order, requires -info)
+          -poll <arg>           poll Oozie until a job reaches a terminal state or a timeout
+                                occurs
+          -refresh              re-materialize the coordinator rerun actions (requires
+                                -rerun)
+          -rerun <arg>          rerun a job  (coordinator requires -action or -date, bundle
+                                requires -coordinator or -date)
+          -resume <arg>         resume a job
+          -run                  run a job
+          -start <arg>          start a job
+          -submit               submit a job
+          -suspend <arg>        suspend a job
+          -timeout <arg>        timeout in minutes (default is 30, negative values indicate
+                                no timeout, requires -poll)
+          -timezone <arg>       use time zone with the specified ID (default GMT).
+                                See 'oozie info -timezones' for a list
+          -update <arg>         Update coord definition and properties
+          -value <arg>          new endtime/concurrency/pausetime value for changing a
+                                coordinator job
+          -verbose              verbose mode
+          -sladisable           disables sla alerts for the job and its children
+          -slaenable            enables sla alerts for the job and its children
+          -slachange            Update sla param for jobs, supported param are should-start, should-end and max-duration
+
+#### Oozie jobs operation commands
+oozie jobs <OPTIONS>          : jobs status
+           -auth <arg>          select authentication type [SIMPLE|KERBEROS]
+           -doas <arg>          doAs user, impersonates as the specified user.
+           -filter <arg>        user=<U>\;name=<N>\;group=<G>\;status=<S>\;frequency=<F>\;unit=<M>\;startcreatedtime=<SC>\;
+                                endcreatedtime=<EC>\;sortby=<SB>
+           -jobtype <arg>       job type ('Supported in Oozie-2.0 or later versions ONLY - coordinator' or 'wf' (default))
+           -len <arg>           number of jobs (default '100')
+           -localtime           use local time (same as passing your time zone to -timezone). Overrides -timezone option
+           -offset <arg>        jobs offset (default '1')
+           -oozie <arg>         Oozie URL
+           -timezone <arg>      use time zone with the specified ID (default GMT). See 'oozie info -timezones' for a list
+           -kill                kill all jobs that satisfy the filter, len, offset, or/and jobtype options. If it's used without
+                                other options, it will kill all the first 50 workflow jobs. Command will fail if one or more
+                                of the jobs is in wrong state.
+           -suspend             suspend all jobs that satisfy the filter, len, offset, or/and jobtype options. If it's used without
+                                other options, it will suspend all the first 50 workflow jobs. Command will fail if one or more
+                                of the jobs is in wrong state.
+           -resume              resume all jobs that satisfy the filter, len, offset, or/and jobtype options. If it's used without
+                                other options, it will resume all the first 50 workflow jobs. Command will fail if one or more
+                                of the jobs is in wrong state.
+           -verbose             verbose mode
+
+#### Oozie admin operation commands
+oozie admin <OPTIONS>         : admin operations
+            -auth <arg>         select authentication type [SIMPLE|KERBEROS]
+            -configuration      show Oozie system configuration
+            -doas <arg>         doAs user, impersonates as the specified user
+            -instrumentation    show Oozie system instrumentation
+            -javasysprops       show Oozie Java system properties
+            -metrics            show Oozie system metrics
+            -oozie <arg>        Oozie URL
+            -osenv              show Oozie system OS environment
+            -queuedump          show Oozie server queue elements
+            -servers            list available Oozie servers (more than one only if HA is enabled)
+            -shareliblist       List available sharelib that can be specified in a workflow action
+            -sharelibupdate     Update server to use a newer version of sharelib
+            -status             show the current system status
+            -systemmode <arg>   Supported in Oozie-2.0 or later versions ONLY. Change oozie
+                                system mode [NORMAL|NOWEBSERVICE|SAFEMODE]
+            -version            show Oozie server build version
+
+#### Oozie validate command
+oozie validate <OPTIONS> <ARGS>   : validate a workflow, coordinator, bundle XML file
+                     -auth <arg>    select authentication type [SIMPLE|KERBEROS]
+                     -oozie <arg>   Oozie URL
+
+#### Oozie SLA operation commands
+oozie sla <OPTIONS>           : sla operations (Deprecated as of Oozie 4.0)
+          -auth <arg>           select authentication type [SIMPLE|KERBEROS]
+          -len <arg>            number of results (default '100', max limited by oozie server setting which defaults to '1000')
+          -offset <arg>         start offset (default '0')
+          -oozie <arg>          Oozie URL
+          -filter <arg>         jobid=<JobID/ActionID>\;appname=<Application Name>
+
+#### Oozie Pig submit command
+oozie pig <OPTIONS> -X <ARGS> : submit a pig job, everything after '-X' are pass-through parameters to pig, any '-D' arguments
+                                after '-X' are put in <configuration>
+          -auth <arg>           select authentication type [SIMPLE|KERBEROS]
+          -doas <arg>           doAs user, impersonates as the specified user.
+          -config <arg>         job configuration file '.properties'
+          -D <property=value>   set/override value for given property
+          -file <arg>           Pig script
+          -oozie <arg>          Oozie URL
+          -P <property=value>   set parameters for script
+
+#### Oozie Hive submit command
+oozie hive <OPTIONS> -X<ARGS>  : submit a hive job, everything after '-X' are pass-through parameters to hive, any '-D' arguments
+ after '-X' are put in <configuration>
+           -auth <arg>           select authentication type [SIMPLE|KERBEROS]
+           -config <arg>         job configuration file '.properties'
+           -D <property=value>   set/override value for given property
+           -doas <arg>           doAs user, impersonates as the specified user
+           -file <arg>           hive script
+           -oozie <arg>          Oozie URL
+           -P <property=value>   set parameters for script
+
+#### Oozie Sqoop submit command
+oozie sqoop <OPTIONS> -X<ARGS> : submit a sqoop job, any '-D' arguments after '-X' are put in <configuration>
+           -auth <arg>           select authentication type [SIMPLE|KERBEROS]
+           -config <arg>         job configuration file '.properties'
+           -D <property=value>   set/override value for given property
+           -doas <arg>           doAs user, impersonates as the specified user
+           -command <arg>        sqoop command
+           -oozie <arg>          Oozie URL
+
+#### Oozie info command
+oozie info <OPTIONS>           : get more detailed info about specific topics
+          -timezones             display a list of available time zones
+
+#### Oozie MapReduce job command
+oozie mapreduce <OPTIONS>           : submit a mapreduce job
+                -auth <arg>           select authentication type [SIMPLE|KERBEROS]
+                -config <arg>         job configuration file '.properties'
+                -D <property=value>   set/override value for given property
+                -doas <arg>           doAs user, impersonates as the specified user
+                -oozie <arg>          Oozie URL
+
 
 
 
