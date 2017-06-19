@@ -2,8 +2,8 @@
 title: oozie纪要
 date: 2017-06-09 11:29:28
 tags: 
-    - 组件 
-    - 实战
+    - component 
+    - doing
     - oozie
 ---
 
