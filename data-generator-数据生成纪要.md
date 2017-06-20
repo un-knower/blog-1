@@ -3,7 +3,10 @@ title: data-generator-数据生成纪要
 date: 2017-06-09 11:33:28
 tags: data
 categories: 研发
+toc: true
 ---
+
+[TOC]
 
 ### 格式化数据生成
 

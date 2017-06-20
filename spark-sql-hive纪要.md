@@ -4,7 +4,11 @@ date: 2017-06-09 11:31:28
 tags:
     - sparksql
     - hive
+toc: true
 ---
+
+[TOC]
+
 ## 环境准备
 1. 拷贝mysql-connector-java-x.y.z-bin.jar到{SPARK_HOME}/jars
 2. 重启spark服务

@@ -7,7 +7,10 @@ tags:
     - log4j
     - logback
     - log4j2
+toc: true
 ---
+
+[TOC]
 
 ## SLF4J
 1. The Simple Logging Facade for Java (SLF4J) serves as a simple facade or abstraction for various logging frameworks (e.g. java.util.logging, logback, log4j) allowing the end user to plug in the desired logging framework at deployment time.

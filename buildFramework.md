@@ -5,7 +5,10 @@ tags:
     - spark
     - build
 categories: 编译构建
+toc: true
 ---
+
+[TOC]
 
 ### task
 	``` shell

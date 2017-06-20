@@ -3,7 +3,10 @@ title: git实践
 date: 2017-06-16 08:55:11
 tags:
     - git
+toc: true
 ---
+
+[TOC]
 
 ## git命令行
 ### configure tooling

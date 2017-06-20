@@ -5,7 +5,10 @@ tags:
     - component 
     - doing
     - oozie
+toc: true
 ---
+
+[TOC]
 
 ### oozie安装
 1. oozie功能测试
@@ -246,6 +249,7 @@ tags:
 #### 实践
 
 
+
 ### oozie restful
     
 
@@ -432,6 +436,61 @@ oozie mapreduce <OPTIONS>           : submit a mapreduce job
                 -doas <arg>           doAs user, impersonates as the specified user
                 -oozie <arg>          Oozie URL
 
+
+#### 生成workflow.xml文件
+##### 生成action xml单元
+``` scala
+package com.chaosdata.oozie
+
+/**
+  * Created by likai on 2017/6/20.
+  * 构造oozie workflow.xml 文件 action配置单元
+  */
+class SparkActionXml(name: String, okto: String, appname: String, clzname: String, args: String) {
+
+  val baseSparkXml =
+    "    <action name=\"" + name + "\">\n" +
+      "        <spark xmlns=\"uri:oozie:spark-action:0.1\">\n" +
+      "            <job-tracker>${jobTracker}</job-tracker>\n" +
+      "            <name-node>${nameNode}</name-node>\n" +
+      "            <configuration>\n" +
+      "                <property>\n" +
+      "                    <name>mapred.compress.map.output</name>\n" +
+      "                    <value>true</value>\n" +
+      "                </property>\n" +
+      "            </configuration>\n" +
+      "            <master>${master}</master>\n" +
+      "            <mode>${deploy_mode}</mode>\n" +
+      "            <name>" + appname + "</name>\n" +
+      "            <class>" + clzname + "</class>\n" +
+      "            <jar>${jar_path}</jar>\n" +
+      args +
+      "            <spark-opts>${spark_opts}</spark-opts>\n" +
+      "        </spark>\n" +
+      "        <ok to=\"" + okto + "\"/>\n" +
+      "        <error to=\"kill\"/>\n" +
+      "    </action>\n"
+}
+```
+##### 生成workflow 单元
+``` scala
+/**
+  * Created by likai14 on 2017/6/20.
+  * 构造oozie workflow 文件
+  */
+class WorkflowXml(appname: String, startto: String, actionsXml: String) {
+  val baseXml =
+    "<workflow-app name=\"" + appname + "-wf\" xmlns=\"uri:oozie:workflow:0.1\">\n" +
+      "    <start to='" + startto + "'/>\n" +
+      actionsXml +
+      "    <kill name='kill'>\n" +
+      "        <message>Something went wrong: ${wf:errorCode('firstdemo')}</message>\n" +
+      "    </kill>\n" +
+      "    <end name='end'/>\n" +
+      "</workflow-app>\n"
+}
+```
+##### 生成workflow.xml 业务逻辑
 
 
 
