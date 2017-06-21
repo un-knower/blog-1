@@ -247,6 +247,11 @@ toc: true
 6. Action handler will skip the nodes given in the config with the same exit transition as before.
 
 #### 实践
+- job DAG: start-->one-->two-->three-->four-->end
+- $oozie job -oozie http://localhost:11000/oozie -config ./job.properties -run
+- job: 0000001-170621145954325-oozie-root-W
+- $oozie job -oozie http://localhost:11000/oozie -kill 0000001-170621145954325-oozie-root-W   执行到three
+- $oozie job -rerun 0000001-170621145954325-oozie-root-W -Doozie.wf.rerun.failnodes=true      重新执行完three-->four-->end
 
 
 
