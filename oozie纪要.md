@@ -10,6 +10,38 @@ toc: true
 
 [TOC]
 
+### 对比
+#### 对比Oozie以及Azkaban，个人觉得选择Oozie作为流程引擎的选型比较好，理由如下：
+1. Oozie是基于Hadoop系统进行操作，而Azkaban是基于命令行进行操作。使用hadoop提供的第三方包JobClient比直接在底层跑shell命令开发成本小，可能遇到的坑也少（一个是基于平台，一个是基于系统）。
+2. Oozie的操作是放在Hadoop中，而Azkaban的运行是服务器运行shell命令。为保证服务器的稳定，使用Oozie靠谱点。
+3. Ooize提供查询任务执行状态，Azkaban查询的是进程执行的结果，如果某进程执行的shell命令出错，其进程仍展示位成功，混淆了任务输出。
+4. Oozie将任务执行的状态持久化到数据库中，Azkaban将任务的状态存储在服务器内存中，如果掉电，则Azkaban会丢失任务信息。
+5. Ooize中定义的action类型更为丰富，而Azkaban中的依赖较为简单，当面对复杂的逻辑时Oozie执行的比较顺畅
+
+#### Oozie方案
+##### 使用场景
+- 需要按顺序并能够并行处理的工作流（DAG）
+- 对运行结果或异常需要报警、重启
+- 需要Cron的任务
+- 适用于批量处理的任务，不适合实时的情况
+
+##### 优点
+- Oozie与Hadoop生态系统紧密结合，提供做种场景的抽象
+- Oozie有更强大的社区支持，文档
+- Job提交到hadoop集群，server本身并不启动任何job
+- 通过control node/action node能够覆盖大多数的应用场景
+- Coordinator支持时间、数据触发的启动模式
+- 支持参数化和EL语言定义workflow，方便复用
+- 结合HUE，能够方便的对workflow查看以及运维
+- 结合HUE，能够完成workflow在前端页面的编辑、提交
+- 支持action之间内存数据的交互（默认2K）
+- 支持workflow的rerun（从某一个节点重启）
+
+#### 以Oozie作为流程引擎的难点：
+1. 定义workflow.xml的过程，需要保证有效的完成用户的逻辑且运行的过程中job不出错。
+2. 部署有点麻烦。
+3. 学习的成本会略高。【仁者见仁】
+
 ### oozie安装
 1. oozie功能测试
 2. 无非3种安装模式
@@ -19,6 +51,60 @@ toc: true
 3. export OOZIE_URL=http://localhost:11000/oozie
 4. oozie job -config ./job.properties -run
 5. oozie job -kill buddle_id | coord_id | wf_id 
+
+### oozie 实践
+#### WorkflowFunctionalSpec
+
+##### Workflow Nodes
+
+###### Control Flow Nodes
+- Start Control Node
+The start node is the entry point for a workflow job, it indicates the first workflow node the workflow job must transition to.
+``` xml
+    <start to='BDQ_CXB_3_load'/>
+```
+- End Control Node
+The end node is the end for a workflow job, it indicates that the workflow job has completed successfully.
+- Kill Control Node
+The kill node allows a workflow job to kill itself.
+``` xml
+    <kill name='kill'>
+        <message>Something went wrong: ${wf:errorCode('firstdemo')}</message>
+    </kill>
+    <end name='end'/>
+```
+- Decision Control Node
+A decision node enables a workflow to make a selection on the execution path to follow.The behavior of a decision node can be seen as a switch-case statement.
+``` xml 
+    <decision name="mydecision">
+        <switch>
+            <case to="reconsolidatejob">
+                <!-- The predicate ELs are evaluated in order until one returns true and the corresponding transition is taken. -->
+                ${fs:fileSize(secondjobOutputDir) gt 10 * GB}
+            </case>
+            <case to="rexpandjob">
+                ${fs:filSize(secondjobOutputDir) lt 100 * MB}
+            </case>
+            <case to="recomputejob">
+                ${ hadoop:counters('secondjob')[RECORDS][REDUCE_OUT] lt 1000000 }
+            </case>
+            <default to="end"/>
+        </switch>
+    </decision>
+```
+
+- Fork and Join Control Nodes
+    A fork node splits one path of execution into multiple concurrent paths of execution.
+    A join node waits until every concurrent execution path of a previous fork node arrives to it.
+    The fork and join nodes must be used in pairs. The join node assumes concurrent execution paths are children of the same fork node.
+``` xml
+    <fork name="BDQ_CXB_3_fork">
+        <path start="BDQ_CXB_QG_1_load"/>
+        <path start="BDQ_CXB_3_core"/>
+    </fork>
+
+    <join name="end_join" to="end"/>
+```
 
 
 #### oozie功能测试
@@ -1078,5 +1164,7 @@ class WorkflowXml(appname: String, startto: String, actionsXml: String) {
 9. 处理extjs问题
 解决方法：下载ext-2.2.zip 放到：
 
+10. # oozie validate ./workflow.xml 
+- Error: Invalid app definition, org.xml.sax.SAXParseException; lineNumber: 2; columnNumber: 23; cvc-pattern-valid: Value '97_a' is not facet-valid with respect to pattern '([a-zA-Z_]([\-_a-zA-Z0-9])*){1,39}' for type 'IDENTIFIER'.
 
 
