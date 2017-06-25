@@ -11,6 +11,23 @@ toc: false
 
 ## markdown
 
+#### 流程图
+- 理论：
+```flow
+st => start:Start
+e => end:End
+
+op1 => operation: 流程操作A
+sub1 => subroutine: 流程路由X
+
+cond => condition: Yes or No?
+io => inputoutput: catch something...
+
+st -> op1 -> e
+cond(yes) -> io -> e
+cond(no) -> sub1(right) -> op1
+```
+
 #### 表格
 
 ##### markdown
@@ -73,6 +90,25 @@ exceltk用例
 
 
 ## Sublime
+
+### 积累
+- 在浏览器中进行预览的步骤如下：
+    + preference--> key binding user 中输入：
+``` console
+    [
+        {"keys": ["alt+m"], "command": "markdown_preview", "args": { "target": "browser"}}
+    ]
+```
+    + Preferences --> Package Settings --> MarkdownLivePreview --> user Setting
+``` console
+    {
+        "browser": "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe",
+        "enable_uml": true,
+        "enable_highlight": true,
+        "markdown_live_preview_on_open": true
+    }
+```
+
 ### 快捷键
 #### Sublime Text 3 快捷键精华版
 - Ctrl+Shift+P：打开命令面板
