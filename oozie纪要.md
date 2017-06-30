@@ -1164,7 +1164,182 @@ class WorkflowXml(appname: String, startto: String, actionsXml: String) {
 9. 处理extjs问题
 解决方法：下载ext-2.2.zip 放到：
 
-10. # oozie validate ./workflow.xml 
+10. $oozie validate ./workflow.xml 
 - Error: Invalid app definition, org.xml.sax.SAXParseException; lineNumber: 2; columnNumber: 23; cvc-pattern-valid: Value '97_a' is not facet-valid with respect to pattern '([a-zA-Z_]([\-_a-zA-Z0-9])*){1,39}' for type 'IDENTIFIER'.
+解决方法：必须以字母或者下划线开头
 
+11. JA006: Call From master66/10.17.139.66 to master66:10020 failed on connection exception: java.net.ConnectException: Connection refused; For more details see:  http://wiki.apache.org/hadoop/ConnectionRefused
+描述：oozie提交任务已运行成功，从spark job history页面可以获取成功信息；但oozie页面出现上面错误信息，并且任务在挂起状态
+解释：当你提交作业时，我们可以打开Yarn的web界面18088，当作业运行完之后，会显示History的状态，表示改作业已经运行完毕，如果想查看作业历史运行信息就可以点击History查看。若未启动historyserver的话，是无法查看作业job的历史记录的。
+解决方法：mr-jobhistory-daemon.sh start historyserver
 
+12. JA017: Could not lookup launched hadoop Job ID [job_1498183093431_0069] which was associated with  action [0000007-170626092106720-oozie-root-W@one].  Failing this action!
+解决方法：
+``` xml oozie-site.xml
+    <!--将原来的-->
+    <property>
+        <name>oozie.service.HadoopAccessorService.hadoop.configurations</name>
+        <value>*=${OOZIE_CONF_HOME}/conf/hadoop/</value>
+    </property>
+    <!--修改为-->
+    <property>
+        <name>oozie.service.HadoopAccessorService.hadoop.configurations</name>
+        <value>*=${HADOOP_CONF_HOME}</value>
+    </property>
+    <!--并添加如下-->
+    <property>
+        <name>oozie.service.HadoopAccessorService.action.configurations</name>
+        <value>*=${HADOOP_CONF_HOME}</value>
+    </property>
+```
+13. Failing Oozie Launcher, Main class [org.apache.oozie.action.hadoop.SparkMain], main() threw exception, org.apache.spark.sql.DataFrameReader.load()Lorg/apache/spark/sql/Dataset;
+java.lang.NoSuchMethodError: org.apache.spark.sql.DataFrameReader.load()Lorg/apache/spark/sql/Dataset;
+  at com.chaos.OracleLoad$.loadTable(OracleLoad.scala:85)
+解决方法：安装sharelib
+
+14. 耗费时间最长的问题
+``` xml
+Failing Oozie Launcher, Main class [org.apache.oozie.action.hadoop.SparkMain], main() threw exception, PermGen space
+java.lang.OutOfMemoryError: PermGen space
+  at java.lang.ClassLoader.defineClass1(Native Method)
+  at java.lang.ClassLoader.defineClass(ClassLoader.java:800)
+  at java.security.SecureClassLoader.defineClass(SecureClassLoader.java:142)
+  at java.net.URLClassLoader.defineClass(URLClassLoader.java:449)
+  at java.net.URLClassLoader.access$100(URLClassLoader.java:71)
+  at java.net.URLClassLoader$1.run(URLClassLoader.java:361)
+  at java.net.URLClassLoader$1.run(URLClassLoader.java:355)
+  at java.security.AccessController.doPrivileged(Native Method)
+  at java.net.URLClassLoader.findClass(URLClassLoader.java:354)
+  at java.lang.ClassLoader.loadClass(ClassLoader.java:425)
+  at java.lang.ClassLoader.loadClass(ClassLoader.java:358)
+  at oracle.jdbc.driver.T4CDriverExtension.allocatePreparedStatement(T4CDriverExtension.java:69)
+  at oracle.jdbc.driver.PhysicalConnection.prepareStatementInternal(PhysicalConnection.java:2013)
+  at oracle.jdbc.driver.PhysicalConnection.prepareStatement(PhysicalConnection.java:1960)
+  at oracle.jdbc.driver.PhysicalConnection.prepareStatement(PhysicalConnection.java:1866)
+  at org.apache.spark.sql.execution.datasources.jdbc.JDBCRDD$.resolveTable(JDBCRDD.scala:60)
+  at org.apache.spark.sql.execution.datasources.jdbc.JDBCRelation.<init>(JDBCRelation.scala:113)
+  at org.apache.spark.sql.execution.datasources.jdbc.JdbcRelationProvider.createRelation(JdbcRelationProvider.scala:45)
+  at org.apache.spark.sql.execution.datasources.DataSource.resolveRelation(DataSource.scala:330)
+  at org.apache.spark.sql.DataFrameReader.load(DataFrameReader.scala:152)
+  at org.apache.spark.sql.DataFrameReader.load(DataFrameReader.scala:125)
+  at com.hikvision.sparta.etl.load.dataload.OracleLoad$.loadTable(OracleLoad.scala:85)
+  at com.hikvision.sparta.etl.load.dataload.DataLoad$.run(DataLoad.scala:78)
+  at com.hikvision.sparta.etl.load.dataload.DataLoad$.main(DataLoad.scala:17)
+  at com.hikvision.sparta.etl.load.dataload.DataLoad.main(DataLoad.scala)
+  at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+  at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+  at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+  at java.lang.reflect.Method.invoke(Method.java:606)
+  at org.apache.spark.deploy.SparkSubmit$.org$apache$spark$deploy$SparkSubmit$$runMain(SparkSubmit.scala:738)
+  at org.apache.spark.deploy.SparkSubmit$.doRunMain$1(SparkSubmit.scala:187)
+  at org.apache.spark.deploy.SparkSubmit$.submit(SparkSubmit.scala:212)
+```
+解决方法：
+``` xml
+<workflow-app name="simple-ONE-wf" xmlns="uri:oozie:workflow:0.1">
+    <start to='ONE'/>
+    <action name="ONE">
+        <spark xmlns="uri:oozie:spark-action:0.1">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <configuration>
+                <property>
+                    <name>oozie.launcher.mapreduce.map.memory.mb</name>
+                    <value>4096</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.mapreduce.map.java.opts</name>
+                    <value>-Xmx3200m</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.mapreduce.map.java.opts</name>
+                    <value>-XX:MaxPermSize=1g</value>
+                </property>
+                ...
+            </configuration>
+           ...
+    </action>
+
+    <kill name='kill'>
+        <message>Something went wrong: ${wf:errorCode('firstdemo')}</message>
+    </kill>
+    <end name='end'/>
+</workflow-app>
+```
+16. action 过多，导致oozie存记录信息到mysql时异常
+``` console
+2017-06-27 17:13:33,624  WARN CallableQueueService$CompositeCallable:523 - SERVER[SERVICE-OOZIE-e8aa07e3356c44228c02f610d58c8e53-OOZIE-0] USER[root] GROUP[-] TOKEN[] APP[demo-wf] JOB[0000021-170626164305337-oozie-root-W] ACTION[0000021-170626164305337-oozie-root-W@BS_PERSON_56_fork] exception callable [signal], E0603: SQL error in operation, <openjpa-2.2.2-r422266:1468616 fatal store error> org.apache.openjpa.persistence.RollbackException: The transaction has been rolled back.  See the nested exceptions for details on the errors that occurred.
+FailedObject: org.apache.oozie.WorkflowActionBean@11cc06e
+org.apache.oozie.command.CommandException: E0603: SQL error in operation, <openjpa-2.2.2-r422266:1468616 fatal store error> org.apache.openjpa.persistence.RollbackException: The transaction has been rolled back.  See the nested exceptions for details on the errors that occurred.
+FailedObject: org.apache.oozie.WorkflowActionBean@11cc06e
+  at org.apache.oozie.command.wf.SignalXCommand.execute(SignalXCommand.java:421)
+  at org.apache.oozie.command.wf.SignalXCommand.execute(SignalXCommand.java:76)
+  at org.apache.oozie.command.XCommand.call(XCommand.java:286)
+  at org.apache.oozie.service.CallableQueueService$CompositeCallable.call(CallableQueueService.java:321)
+  at org.apache.oozie.service.CallableQueueService$CompositeCallable.call(CallableQueueService.java:250)
+  at org.apache.oozie.service.CallableQueueService$CallableWrapper.run(CallableQueueService.java:175)
+  at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+  at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+  at java.lang.Thread.run(Thread.java:745)
+Caused by: org.apache.oozie.executor.jpa.JPAExecutorException: E0603: SQL error in operation, <openjpa-2.2.2-r422266:1468616 fatal store error> org.apache.openjpa.persistence.RollbackException: The transaction has been rolled back.  See the nested exceptions for details on the errors that occurred.
+FailedObject: org.apache.oozie.WorkflowActionBean@11cc06e
+  at org.apache.oozie.service.JPAService.executeBatchInsertUpdateDelete(JPAService.java:425)
+  at org.apache.oozie.executor.jpa.BatchQueryExecutor.executeBatchInsertUpdateDelete(BatchQueryExecutor.java:132)
+  at org.apache.oozie.command.wf.SignalXCommand.execute(SignalXCommand.java:412)
+  ... 8 more
+Caused by: <openjpa-2.2.2-r422266:1468616 fatal store error> org.apache.openjpa.persistence.RollbackException: The transaction has been rolled back.  See the nested exceptions for details on the errors that occurred.
+FailedObject: org.apache.oozie.WorkflowActionBean@11cc06e
+  at org.apache.openjpa.persistence.EntityManagerImpl.commit(EntityManagerImpl.java:594)
+  at org.apache.oozie.service.JPAService.executeBatchInsertUpdateDelete(JPAService.java:421)
+  ... 10 more
+Caused by: <openjpa-2.2.2-r422266:1468616 fatal general error> org.apache.openjpa.persistence.PersistenceException: The transaction has been rolled back.  See the nested exceptions for details on the errors that occurred.
+FailedObject: org.apache.oozie.WorkflowActionBean@11cc06e
+  at org.apache.openjpa.kernel.BrokerImpl.newFlushException(BrokerImpl.java:2347)
+  at org.apache.openjpa.kernel.BrokerImpl.flush(BrokerImpl.java:2184)
+  at org.apache.openjpa.kernel.BrokerImpl.flushSafe(BrokerImpl.java:2082)
+  at org.apache.openjpa.kernel.BrokerImpl.beforeCompletion(BrokerImpl.java:2000)
+  at org.apache.openjpa.kernel.LocalManagedRuntime.commit(LocalManagedRuntime.java:81)
+  at org.apache.openjpa.kernel.BrokerImpl.commit(BrokerImpl.java:1524)
+  at org.apache.openjpa.kernel.DelegatingBroker.commit(DelegatingBroker.java:933)
+  at org.apache.openjpa.persistence.EntityManagerImpl.commit(EntityManagerImpl.java:570)
+  ... 11 more
+Caused by: <openjpa-2.2.2-r422266:1468616 fatal general error> org.apache.openjpa.persistence.PersistenceException: Data truncation: Data too long for column 'execution_path' at row 1 {prepstmnt 33903617 INSERT INTO WF_ACTIONS (id, conf, console_url, created_time, cred, data, end_time, error_code, error_message, execution_path, external_child_ids, external_id, external_status, last_check_time, log_token, name, pending, pending_age, retries, signal_value, sla_xml, start_time, stats, status, tracker_uri, transition, type, user_retry_count, user_retry_interval, user_retry_max, wf_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)} [code=0, state=22001]
+FailedObject: org.apache.oozie.WorkflowActionBean@11cc06e
+  at org.apache.openjpa.jdbc.sql.DBDictionary.narrow(DBDictionary.java:4962)
+  at org.apache.openjpa.jdbc.sql.DBDictionary.newStoreException(DBDictionary.java:4922)
+  at org.apache.openjpa.jdbc.sql.SQLExceptions.getStore(SQLExceptions.java:136)
+  at org.apache.openjpa.jdbc.sql.SQLExceptions.getStore(SQLExceptions.java:78)
+  at org.apache.openjpa.jdbc.kernel.PreparedStatementManagerImpl.flushAndUpdate(PreparedStatementManagerImpl.java:144)
+  at org.apache.openjpa.jdbc.kernel.BatchingPreparedStatementManagerImpl.flushAndUpdate(BatchingPreparedStatementManagerImpl.java:79)
+  at org.apache.openjpa.jdbc.kernel.PreparedStatementManagerImpl.flushInternal(PreparedStatementManagerImpl.java:100)
+  at org.apache.openjpa.jdbc.kernel.PreparedStatementManagerImpl.flush(PreparedStatementManagerImpl.java:88)
+  at org.apache.openjpa.jdbc.kernel.ConstraintUpdateManager.flush(ConstraintUpdateManager.java:550)
+  at org.apache.openjpa.jdbc.kernel.ConstraintUpdateManager.flush(ConstraintUpdateManager.java:106)
+  at org.apache.openjpa.jdbc.kernel.BatchingConstraintUpdateManager.flush(BatchingConstraintUpdateManager.java:59)
+  at org.apache.openjpa.jdbc.kernel.AbstractUpdateManager.flush(AbstractUpdateManager.java:105)
+  at org.apache.openjpa.jdbc.kernel.AbstractUpdateManager.flush(AbstractUpdateManager.java:78)
+  at org.apache.openjpa.jdbc.kernel.JDBCStoreManager.flush(JDBCStoreManager.java:732)
+  at org.apache.openjpa.kernel.DelegatingStoreManager.flush(DelegatingStoreManager.java:131)
+  ... 18 more
+Caused by: org.apache.openjpa.lib.jdbc.ReportingSQLException: Data truncation: Data too long for column 'execution_path' at row 1 {prepstmnt 33903617 INSERT INTO WF_ACTIONS (id, conf, console_url, created_time, cred, data, end_time, error_code, error_message, execution_path, external_child_ids, external_id, external_status, last_check_time, log_token, name, pending, pending_age, retries, signal_value, sla_xml, start_time, stats, status, tracker_uri, transition, type, user_retry_count, user_retry_interval, user_retry_max, wf_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)} [code=0, state=22001]
+  at org.apache.openjpa.lib.jdbc.LoggingConnectionDecorator.wrap(LoggingConnectionDecorator.java:219)
+  at org.apache.openjpa.lib.jdbc.LoggingConnectionDecorator.wrap(LoggingConnectionDecorator.java:195)
+  at org.apache.openjpa.lib.jdbc.LoggingConnectionDecorator.access$1000(LoggingConnectionDecorator.java:59)
+  at org.apache.openjpa.lib.jdbc.LoggingConnectionDecorator$LoggingConnection$LoggingPreparedStatement.executeUpdate(LoggingConnectionDecorator.java:1134)
+  at org.apache.openjpa.lib.jdbc.DelegatingPreparedStatement.executeUpdate(DelegatingPreparedStatement.java:275)
+  at org.apache.openjpa.jdbc.kernel.JDBCStoreManager$CancelPreparedStatement.executeUpdate(JDBCStoreManager.java:1792)
+  at org.apache.openjpa.jdbc.kernel.PreparedStatementManagerImpl.executeUpdate(PreparedStatementManagerImpl.java:268)
+  at org.apache.openjpa.jdbc.kernel.PreparedStatementManagerImpl.flushAndUpdate(PreparedStatementManagerImpl.java:119)
+  ... 28 more
+```
+解决方法：
+``` sql
+ALTER TABLE `ooziedb`.`WF_ACTIONS` 
+CHANGE COLUMN `execution_path` `execution_path` VARCHAR(65532) CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL DEFAULT NULL ;
+```
+- VARCHAR(1024)变成MEDIUMTEXT
+
+17. oozie yarn-cluster spark
+``` console
+ diagnostics: User class threw exception: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'ConfDictElemService': Injection of autowired dependencies failed; nested exception is org.springframework.beans.factory.BeanCreationException: Could not autowire field: private com.hikvision.sparta.etl.db.mappers.ConfDictElemMapper com.hikvision.sparta.etl.db.service.impl.ConfDictElemServiceImpl.confDictElemMapper; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'confDictElemMapper' defined in URL [jar:file:/mnt/ssd1/data/LOCALCLUSTER/SERVICE-HADOOP-79dbed26cf7f49729e42a75f0f84c3e7/nm/local/usercache/root/filecache/339/sparta-vulcanus-load.jar!/com/hikvision/sparta/etl/db/mappers/ConfDictElemMapper.class]: Unsatisfied dependency expressed through bean property 'sqlSessionFactory': : Error creating bean with name 'sqlSessionFactory' defined in class path resource [applicationContext-etldb.xml]: Invocation of init method failed; nested exception is org.springframework.core.NestedIOException: Failed to parse mapping resource: 'URL [jar:file:/mnt/disk1/data/LOCALCLUSTER/SERVICE-HADOOP-79dbed26cf7f49729e42a75f0f84c3e7/nm/local/usercache/root/appcache/application_1498183093431_1151/container_1498183093431_1151_02_000001/__app__.jar!/mappers/ConfDictElemMapper.xml]'; nested exception is org.apache.ibatis.builder.BuilderException: Error parsing Mapper XML. Cause: java.lang.IllegalArgumentException: Result Maps collection already contains value for com.hikvision.sparta.etl.db.mappers.ConfDictElemMapper.BaseResultMap; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'sqlSessionFactory' defined in class path resource [applicationContext-etldb.xml]: Invocation of init method failed; nested exception is org.springframework.core.NestedIOException: Failed to parse mapping resource: 'URL [jar:file:/mnt/disk1/data/LOCALCLUSTER/SERVICE-HADOOP-79dbed26cf7f49729e42a75f0f84c3e7/nm/local/usercache/root/appcache/application_1498183093431_1151/container_1498183093431_1151_02_000001/__app__.jar!/mappers/ConfDictElemMapper.xml]'; nested exception is org.apache.ibatis.builder.BuilderException: Error parsing Mapper XML. Cause: java.lang.IllegalArgumentException: Result Maps collection already contains value for com.hikvision.sparta.etl.db.mappers.ConfDictElemMapper.BaseResultMap
+```
