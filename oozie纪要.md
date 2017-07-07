@@ -252,6 +252,10 @@ A decision node enables a workflow to make a selection on the execution path to 
         grant all privileges on ooziedb to 'oozie'@'localhost' identified by 'passwd';
         grant all privileges on ooziedb to 'oozie'@'%' identified by 'passwd';
         flush privileges;
+
+        -- ERROR 1045 (28000): Access denied for user 'root'@'localhost' (using password: NO)
+
+
     ```
 2. 修改配置使用mysql数据库
     ``` xml
@@ -338,6 +342,7 @@ A decision node enables a workflow to make a selection on the execution path to 
 - job: 0000001-170621145954325-oozie-root-W
 - $oozie job -oozie http://localhost:11000/oozie -kill 0000001-170621145954325-oozie-root-W   执行到three
 - $oozie job -rerun 0000001-170621145954325-oozie-root-W -Doozie.wf.rerun.failnodes=true      重新执行完three-->four-->end
+- oozie job -rerun 0000002-170630001302466-oozie-root-W -Doozie.wf.rerun.failnodes=true -config ./job_cm.properties #更新配置文件，需带上-config生效
 
 
 
