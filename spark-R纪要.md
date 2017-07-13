@@ -120,6 +120,34 @@ sparkR.session.stop()
     ```
 
 
+## 实践
+### R加载mysql数据
+#### 环境准备
+- $install.packages("RMySQL") 安装RMySQL 包\
+- $library(RMySQL) 
+- $help(package="RMySQL")
+- $con <- dbConnect(MySQL(),host="host",dbname="dbname",user="root",password="passwd")
+- $summary(con)
+- $dbGetInfo(con)
+- $dbListTables(con)
+- $dbRemoveTable(con,"test") 
+- $dbDisconnect(con) #断开连接
+
+``` r
+    res <- dbGetQuery(con, "SELECT count, missing_count, unique_count FROM stats_general;")
+    plot(res$unique_count, res$missing_count, xlab="unique()", ylab="missing()", main="graph_unique_missing")
+    plot(res$count, res$missing_count, xlab="count()", ylab="missing()", main="graph_count_missing")
+    plot(res$count, res$unique_count, xlab="count()", ylab="unique()", main="graph_count_unique")
+```
+
+#### 
+
+## 命令积累
+``` r
+install.packages("ggplot2")
+install.packages("rmarkdown")
+install.packages("xtable")
+```
 
 ## 读书纪要
 

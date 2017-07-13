@@ -71,12 +71,40 @@ hive-site.xml
     phone string,
     address string)ROW FORMAT DELIMITED FIELDS TERMINATED BY '\u0001\t' STORED AS TEXTFILE;
 
+    LOAD DATA INPATH 'hdfs://hostname:8020/user/hive/warehouse/tmp/hotel/hotel' OVERWRITE INTO TABLE hotel;
+
+    create table wzhg(  
+    c0 string,  
+    c1 string,  
+    c2 string  
+    )row format serde 'org.apache.hadoop.hive.contrib.serde2.RegexSerDe'  
+    with serdeproperties (  
+    'input.regex' = 'bduid\\[(.*)\\]uid\\[(\\d+)\\]uname\\[(.*)\\]',  
+    'output.format.string' = '%1$s\t%2$s'  
+    ) stored as textfile;  
+
 
 ```
 
 
 ## 原理探索
 ### 
+
+
+## 细节积累
+### 日常操作
+- spark-sql安全退出：$quit;
+
+
+## 概念
+### DataFrame & Dataset
+#### Dataset:distributed collection of data,benefits of
+- RDDs(strong typing,ability to use powerful lambda functions)
+- spark SQL's optimized execution engine
+
+#### DataFrame:Dataset organized into named columns
+- (Dataset of Rows \ Dataset[Row])
+- like:[- table in relational db - data frame in R,Python]{but with richer optimizations under the hood}
 
 
 ## 开发
