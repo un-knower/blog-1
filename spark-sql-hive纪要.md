@@ -4,7 +4,7 @@ date: 2017-06-09 11:31:28
 tags:
     - sparksql
     - hive
-toc: true
+
 ---
 
 [TOC]
@@ -1344,9 +1344,223 @@ Spark SQL supports the vast majority of Hive features, such as:
 
 
 
-
-
 ### DML Data Manipulation Statements
+#### DML: Load, Insert, Update, Delete
+##### Loading files into tables
+Hive does not do any transformation while loading data into tables. Load operations are currently pure copy/move operations that move datafiles into locations corresponding to Hive tables.
+###### Syntax
+``` sql
+    LOAD DATA [LOCAL] INPATH 'filepath' [OVERWRITE] INTO TABLE tablename [PARTITION (partcol1=val1, partcol2=val2 ...)]
+```
+###### Synopsis(概要)
+- Load operations are currently pure copy/move operations that move datafiles into locations corresponding to Hive tables.
+    + filepath can be:
+        * a relative path, such as project/data1
+        * an absolute path, such as /user/hive/project/data1
+        * a full URI with scheme and (optionally) an authority, such as hdfs://namenode:9000/user/hive/project/data1
+    + The target being loaded to can be a table or a partition. If the table is partitioned, then one must specify a specific partition of the table by specifying values for all of the partitioning columns.
+    + filepath can refer to a file (in which case Hive will move the file into the table) or it can be a directory (in which case Hive will move all the files within that directory into the table). In either case, filepath addresses a set of files.
+    + If the keyword LOCAL is specified, then:
+        * the load command will look for filepath in the local file system. If a relative path is specified, it will be interpreted relative to the user's current working directory. The user can specify a full URI for local files as well - for example: file:///user/hive/project/data1
+        * the load command will try to copy all the files addressed by filepath to the target filesystem. The target file system is inferred by looking at the location attribute of the table. The copied data files will then be moved to the table.
+    + If the keyword LOCAL is not specified, then Hive will either use the full URI of filepath, if one is specified, or will apply the following rules:
+        * If scheme or authority are not specified, Hive will use the scheme and authority from the hadoop configuration variable fs.default.name that specifies the Namenode URI.
+        * If the path is not absolute, then Hive will interpret it relative to /user/<username>
+        * Hive will move the files addressed by filepath into the table (or partition)
+    + If the OVERWRITE keyword is used then the contents of the target table (or partition) will be deleted and replaced by the files referred to by filepath; otherwise the files referred by filepath will be added to the table.
+- Notes
+    + filepath cannot contain subdirectories.
+    + If the keyword LOCAL is not given, filepath must refer to files within the same filesystem as the table's (or partition's) location.
+    + Hive does some minimal checks to make sure that the files being loaded match the target table. Currently it checks that if the table is stored in sequencefile format, the files being loaded are also sequencefiles, and vice versa.
+    + A bug that prevented loading a file when its name includes the "+" character is fixed in release 0.13.0 (HIVE-6048).
+    + Please read CompressedStorage if your datafile is compressed.
+    
+##### Inserting data into Hive Tables from queries
+Query Results can be inserted into tables by using the insert clause.
+###### Syntax
+``` sql
+    -- Standard syntax:
+    INSERT OVERWRITE TABLE tablename1 [PARTITION (partcol1=val1, partcol2=val2 ...) [IF NOT EXISTS]] select_statement1 FROM from_statement;
+    INSERT INTO TABLE tablename1 [PARTITION (partcol1=val1, partcol2=val2 ...)] select_statement1 FROM from_statement;
+     
+    -- Hive extension (multiple inserts):
+    FROM from_statement
+    INSERT OVERWRITE TABLE tablename1 [PARTITION (partcol1=val1, partcol2=val2 ...) [IF NOT EXISTS]] select_statement1
+    [INSERT OVERWRITE TABLE tablename2 [PARTITION ... [IF NOT EXISTS]] select_statement2]
+    [INSERT INTO TABLE tablename2 [PARTITION ...] select_statement2] ...;
+    FROM from_statement
+    INSERT INTO TABLE tablename1 [PARTITION (partcol1=val1, partcol2=val2 ...)] select_statement1
+    [INSERT INTO TABLE tablename2 [PARTITION ...] select_statement2]
+    [INSERT OVERWRITE TABLE tablename2 [PARTITION ... [IF NOT EXISTS]] select_statement2] ...;
+     
+    -- Hive extension (dynamic partition inserts):
+    INSERT OVERWRITE TABLE tablename PARTITION (partcol1[=val1], partcol2[=val2] ...) select_statement FROM from_statement;
+    INSERT INTO TABLE tablename PARTITION (partcol1[=val1], partcol2[=val2] ...) select_statement FROM from_statement;
+```
+###### Dynamic Partition Inserts
+- Example
+``` sql
+    FROM page_view_stg pvs
+    INSERT OVERWRITE TABLE page_view PARTITION(dt='2008-06-08', country)
+           SELECT pvs.viewTime, pvs.userid, pvs.page_url, pvs.referrer_url, null, null, pvs.ip, pvs.cnt
+```
+
+##### Writing data into the filesystem from queries
+###### Syntax
+``` sql
+    -- Standard syntax:
+    INSERT OVERWRITE [LOCAL] DIRECTORY directory1
+      [ROW FORMAT row_format] [STORED AS file_format] -- (Note: Only available starting with Hive 0.11.0)
+      SELECT ... FROM ...
+     
+    -- Hive extension (multiple inserts):
+    FROM from_statement
+    INSERT OVERWRITE [LOCAL] DIRECTORY directory1 select_statement1
+    [INSERT OVERWRITE [LOCAL] DIRECTORY directory2 select_statement2] ...
+     
+    row_format
+      : DELIMITED [FIELDS TERMINATED BY char [ESCAPED BY char]] [COLLECTION ITEMS TERMINATED BY char]
+            [MAP KEYS TERMINATED BY char] [LINES TERMINATED BY char]
+            [NULL DEFINED AS char] -- (Note: Only available starting with Hive 0.13)
+```
+##### Inserting values into tables from SQL
+###### Syntax
+``` sql
+    INSERT INTO TABLE tablename [PARTITION (partcol1[=val1], partcol2[=val2] ...)] VALUES values_row [, values_row ...]
+     
+    Where values_row is:
+    ( value [, value ...] )
+    where a value is either null or any valid SQL literal
+```
+###### Examples
+``` sql
+    CREATE TABLE students (name VARCHAR(64), age INT, gpa DECIMAL(3, 2))
+      CLUSTERED BY (age) INTO 2 BUCKETS STORED AS ORC;
+     
+    INSERT INTO TABLE students
+      VALUES ('fred flintstone', 35, 1.28), ('barney rubble', 32, 2.32);
+     
+     
+    CREATE TABLE pageviews (userid VARCHAR(64), link STRING, came_from STRING)
+      PARTITIONED BY (datestamp STRING) CLUSTERED BY (userid) INTO 256 BUCKETS STORED AS ORC;
+     
+    INSERT INTO TABLE pageviews PARTITION (datestamp = '2014-09-23')
+      VALUES ('jsmith', 'mail.com', 'sports.com'), ('jdoe', 'mail.com', null);
+     
+    INSERT INTO TABLE pageviews PARTITION (datestamp)
+      VALUES ('tjohnson', 'sports.com', 'finance.com', '2014-09-23'), ('tlee', 'finance.com', null, '2014-09-21');
+```
+##### Update
+###### Syntax
+``` sql
+    UPDATE tablename SET column = value [, column = value ...] [WHERE expression]
+```
+##### Delete
+###### Syntax
+``` sql
+    DELETE FROM tablename [WHERE expression]
+```
+##### Merge
+###### Syntax
+``` sql
+    -- Standard Syntax:
+    MERGE INTO <target table> AS T USING <source expression/table> AS S
+    ON <boolean expression1>
+    WHEN MATCHED [AND <boolean expression2>] THEN UPDATE SET <set clause list>
+    WHEN MATCHED [AND <boolean expression3>] THEN DELETE
+    WHEN NOT MATCHED [AND <boolean expression4>] THEN INSERT VALUES<value list>
+```
+
+
+#### Import/Export
+##### Export Syntax
+``` sql
+    EXPORT TABLE tablename [PARTITION (part_column="value"[, ...])]
+      TO 'export_target_path' [ FOR replication('eventid') ]
+```
+##### Import Syntax
+``` sql
+    IMPORT [[EXTERNAL] TABLE new_or_original_tablename [PARTITION (part_column="value"[, ...])]]
+      FROM 'source_path'
+      [LOCATION 'import_target_path']
+```
+##### Replication usage
+###### Examples
+``` sql
+    -- Simple export and import:
+    export table department to 'hdfs_exports_location/department';
+    import from 'hdfs_exports_location/department';
+    -- Rename table on import:
+    export table department to 'hdfs_exports_location/department';
+    import table imported_dept from 'hdfs_exports_location/department';
+    -- Export partition and import:
+    export table employee partition (emp_country="in", emp_state="ka") to 'hdfs_exports_location/employee';
+    import from 'hdfs_exports_location/employee';
+    -- Export table and import partition:
+    export table employee to 'hdfs_exports_location/employee';
+    import table employee partition (emp_country="us", emp_state="tn") from 'hdfs_exports_location/employee';
+    -- Specify the import location:
+    export table department to 'hdfs_exports_location/department';
+    import table department from 'hdfs_exports_location/department' 
+           location 'import_target_location/department';
+    -- Import as an external table:
+    export table department to 'hdfs_exports_location/department';
+    import external table department from 'hdfs_exports_location/department';
+```
+
+
+#### Data Retrieval: Queries
+##### Select
+``` sql
+    [WITH CommonTableExpression (, CommonTableExpression)*]    -- (Note: Only available starting with Hive 0.13.0)
+    SELECT [ALL | DISTINCT] select_expr, select_expr, ...
+      FROM table_reference
+      [WHERE where_condition]
+      [GROUP BY col_list]
+      [ORDER BY col_list]
+      [CLUSTER BY col_list
+        | [DISTRIBUTE BY col_list] [SORT BY col_list]
+      ]
+     [LIMIT [offset,] rows]
+
+     -- WHERE Clause
+     SELECT * FROM sales WHERE amount > 10 AND region = "US"
+     -- ALL(default) and DISTINCT Clauses
+     SELECT DISTINCT col1, col2 FROM t1
+     -- Partition Based Queries
+     SELECT page_views.*
+     FROM page_views
+     WHERE page_views.date >= '2008-03-01' AND page_views.date <= '2008-03-31'
+
+     SELECT page_views.*
+     FROM page_views JOIN dim_users
+        ON (page_views.user_id = dim_users.id AND page_views.date >= '2008-03-01' AND page_views.date <= '2008-03-31')
+     -- HAVING Clause
+     SELECT col1 FROM t1 GROUP BY col1 HAVING SUM(col2) > 10
+     SELECT col1 FROM (SELECT col1, SUM(col2) AS col2sum FROM t1 GROUP BY col1) t2 WHERE t2.col2sum > 10
+     -- LIMIT Clause
+     SELECT * FROM customers LIMIT 5
+     SELECT * FROM customers ORDER BY create_date LIMIT 5
+     SELECT * FROM customers ORDER BY create_date LIMIT 2,5
+     -- REGEX Column Specification
+     SELECT `(ds|hr)?+.+` FROM sales
+```
+###### Group By
+###### Sort/Distribute/Cluster/Order By
+###### Transform and Map-Reduce Scripts
+###### Operators and User-Defined Functions (UDFs)
+###### XPath-specific Functions
+###### Joins
+###### Join Optimization
+###### Union
+###### Lateral View
+##### Sub Queries
+##### Sampling
+##### Virtual Columns
+##### Windowing and Analytics Functions
+##### Enhanced Aggregation, Cube, Grouping and Rollup
+
+
 
 
 ## 原理探索
