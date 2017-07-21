@@ -53,3 +53,11 @@ tags:
     response.getResults
   }
 ```
+
+
+### IK分词
+#### 配置IK分词
+- $SOLR_INSTALL_HOME=E:\developPlat\solr-6.6.0
+- ik-analyzer-solr6-6.0.jar 放入${SOLR_INSTALL_HOME}\server\solr-webapp\webapp\WEB-INF\lib
+    + 编辑该jar文件可修改里面的文件：IKAnalyzer.cfg.xml、ext.dic、stopword.dic
+- 重启solr
