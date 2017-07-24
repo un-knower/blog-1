@@ -22,36 +22,36 @@ tags:
 4. 编辑hive-site.xml文件
 hive-site.xml
 ``` xml
-    <configuration>
-        <property>
-            <name>hive.zookeeper.quorum</name>
-            <value>hostname:2181</value>
-        </property>
-        <property>
-            <name>spark.sql.warehouse.dir</name>
-            <value>hdfs://hostname:8020/user/hive/warehouse</value>
-        </property>
-        <property>
-            <name>hive.metastore.local</name>
-            <value>true</value>
-        </property>
-        <property>
-            <name>javax.jdo.option.ConnectionURL</name>
-            <value>jdbc:mysql://hostname:3306/hivedb</value>
-        </property>
-        <property>
-            <name>javax.jdo.option.ConnectionDriverName</name>
-            <value>com.mysql.jdbc.Driver</value>
-        </property>
-        <property>
-            <name>javax.jdo.option.ConnectionUserName</name>
-            <value>hive</value>
-        </property>
-        <property>
-            <name>javax.jdo.option.ConnectionPassword</name>
-            <value>passwd</value>
-        </property>
-    </configuration>
+<configuration>
+    <property>
+        <name>hive.zookeeper.quorum</name>
+        <value>hostname:2181</value>
+    </property>
+    <property>
+        <name>spark.sql.warehouse.dir</name>
+        <value>hdfs://hostname:8020/user/hive/warehouse</value>
+    </property>
+    <property>
+        <name>hive.metastore.local</name>
+        <value>true</value>
+    </property>
+    <property>
+        <name>javax.jdo.option.ConnectionURL</name>
+        <value>jdbc:mysql://hostname:3306/hivedb</value>
+    </property>
+    <property>
+        <name>javax.jdo.option.ConnectionDriverName</name>
+        <value>com.mysql.jdbc.Driver</value>
+    </property>
+    <property>
+        <name>javax.jdo.option.ConnectionUserName</name>
+        <value>hive</value>
+    </property>
+    <property>
+        <name>javax.jdo.option.ConnectionPassword</name>
+        <value>passwd</value>
+    </property>
+</configuration>
 ```
 5. 编辑spark-defaults.conf
 ``` shell
@@ -69,7 +69,7 @@ hive-site.xml
     id string,
     name string,
     phone string,
-    address string)ROW FORMAT DELIMITED FIELDS TERMINATED BY '\u0001\t' STORED AS TEXTFILE;
+    address string)ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t' STORED AS TEXTFILE;
 
     LOAD DATA INPATH 'hdfs://hostname:8020/user/hive/warehouse/tmp/hotel/hotel' OVERWRITE INTO TABLE hotel;
 
@@ -100,6 +100,22 @@ com.mysql.jdbc.exceptions.MySQLSyntaxErrorException: You have an error in your S
 ```
 解决方法：下载最新的https://downloads.mysql.com/archives/c-j/ 的Connector/J 替换原有旧jar
 
+``` console
+17/07/23 03:55:21 ERROR Datastore: Error thrown executing CREATE TABLE `PARTITION_PARAMS`
+(
+    `PART_ID` BIGINT NOT NULL,
+    `PARAM_KEY` VARCHAR(256) BINARY NOT NULL,
+    `PARAM_VALUE` VARCHAR(4000) BINARY NULL,
+    CONSTRAINT `PARTITION_PARAMS_PK` PRIMARY KEY (`PART_ID`,`PARAM_KEY`)
+) ENGINE=INNODB : Specified key was too long; max key length is 767 bytes
+com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Specified key was too long; max key length is 767 bytes
+    at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+    at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+    at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+    at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+    at com.mysql.jdbc.Util.handleNewInstance(Util.java:377)
+```
+解决方案:alter database sparksqlhivedb character set latin1
 
 ## Spark SQL Reference
 ### Spark SQL Language Manual

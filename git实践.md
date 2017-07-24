@@ -77,3 +77,60 @@ Register a repository bookmark and exchange version history
 ##### error: RPC failed; result=56, HTTP code = 200
 1. git config http.postBuffer 524288000
 2. git config --global http.postBuffer 524288000
+
+#### git status -s 中文乱码
+- 通过将Git配置变量 core.quotepath 设置为false，就可以解决中文文件名称在这些Git命令输出中的显示问题，
+	+ git config --global core.quotepath false
+
+
+## 教程验证实践
+
+GitHub操作流程 :
+
+第一次提交 :  
+方案一 : 本地创建项目根目录, 然后与远程GitHub关联, 之后的操作一样;
+-- 初始化Git仓库 :Git init ;
+-- 提交改变到缓存 :git commit -m 'description' ;
+-- 本地git仓库关联GitHub仓库 : git remote add origin git@github.com:han1202012/TabHost_Test.git ;
+-- 提交到GitHub中 : git push -u origin master ;
+方案二 : 方案二就是不用关联GitHub仓库, 直接从GitHub冲克隆源码到本地, 项目根目录也不用创建;
+-- 从GitHub上克隆项目到本地 :git clone git@github.com:han1202012/NDKHelloworld.git , 注意克隆的时候直接在仓库根目录即可, 不用再创建项目根目录 ;
+-- 添加文件 :git add ./* , 将目录中所有文件添加;
+-- 提交缓存 :git commit -m '提交';
+-- 提交到远程GitHub仓库 : git push -u origin master ;
+之后修改提交 : 
+-- 与GitHub远程仓库同步 :git pull ;
+-- 查看文件变更 : git status ;
+-- 提交代码到本地缓存 : git commit -m 'description';
+--提交代码到远程GitHub仓库 :git push ;
+
+.gitignore用法 : 开放模式 注明忽略的文件 直接列出文件名, 保守模式 注明保留的文件 !文件名 ;
+
+Git标签操作 : 轻量级标签, 带注释标签;
+--查看标签 :git tag ;
+--添加标签 : 轻量级标签git tag tagName , 带注释标签git tag -a tagName -m 'description' ;
+--删除标签 :git tag -d tagName ;
+--提交标签到GitHub中 : git push origin --tags ;
+
+Git分支操作: 创建分支后, 分支操作不会影响master分支, 但是master分支改变会影其它分支;
+--列出分支 :git branch ;
+--切换分支 :git checkout master ;
+--提交分支 : git push origin branchName ;
+--删除分支 : git branch -d branchName , 强制删除分支 git branch -D branchName ;
+--合并分支 : git merge branchName ;
+
+.
+一. Git介绍
+
+分布式 : Git版本控制系统是一个分布式的系统, 是用来保存工程源代码历史状态的命令行工具;
+
+保存点 : Git的保存点可以追踪源码中的文件, 并能得到某一个时间点上的整个工程项目额状态; 可以在该保存点将多人提交的源码合并, 也可以会退到某一个保存点上;
+
+Git离线操作性 :Git可以离线进行代码提交, 因此它称得上是完全的分布式处理, Git所有的操作不需要在线进行; 这意味着Git的速度要比SVN等工具快得多,  因为SVN等工具需要在线时才能操作, 如果网络环境不好, 提交代码会变得非常缓慢; 
+
+Git基于快照 : SVN等老式版本控制工具是将提交点保存成补丁文件, Git提交是将提交点指向提交时的项目快照, 提交的东西包含一些元数据(作者, 日期, GPG等);
+
+Git的分支和合并 : 分支模型是Git最显著的特点, 因为这改变了开发者的开发模式, SVN等版本控制工具将每个分支都要放在不同的目录中, Git可以在同一个目录中切换不同的分支;
+分支即时性 : 创建和切换分支几乎是同时进行的, 用户可以上传一部分分支, 另外一部分分支可以隐藏在本地, 不必将所有的分支都上传到GitHub中去;
+分支灵活性 : 用户可以随时 创建 合并 删除分支, 多人实现不同的功能, 可以创建多个分支进行开发, 之后进行分支合并, 这种方式使开发变得快速, 简单, 安全;
+
