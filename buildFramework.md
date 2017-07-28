@@ -4,7 +4,7 @@ date: 2017-06-07 09:31:38
 tags:
     - spark
     - build
-categories: 编译构建
+categories: build
 toc: true
 ---
 
@@ -40,3 +40,4 @@ toc: true
 2. mvn -Pyarn -Pbigtop-dist -Phadoop-2.6 -Dhadoop.version=2.6.0 -DskipTests clean package
 3. mvn -Pyarn -Phadoop-2.4 -Dhadoop.version=2.4.0 -Phive -Phive-thriftserver -DskipTests clean package
 4. mvn -Pyarn -Phadoop-2.4 -Dscala-2.10 -DskipTests clean package
+5. 

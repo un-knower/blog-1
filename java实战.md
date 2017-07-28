@@ -8,6 +8,23 @@ toc: true
 
 [TOC]
 
+### PACKAGE
+#### shade
+
+#### assembly
+
+### CLASSPATH
+
+#### Specification Order
+The order in which you specify multiple class path entries is important. The Java interpreter will look for classes in the directories in the order they appear in the class path variable. In the previous example, the Java interpreter will first look for a needed class in the directory /java/MyClasses. Only when it does not find a class with the proper name in that directory will the interpreter look in the /java/OtherClasses directory.
+jvm查找类，不仅仅是按名字找，还有包，如果包不同，也视为为同的class，如果package+class都相同，则根据classpath的设置顺序，前面的优先加载，一旦前面的被加载，后面的就再也不会被加载了,也就是说其实还是有一定的加载规则加载顺序的,你不能寄希望与系统，让它智能的加载你想要的。
+如果系统出现了重名class，危险性是非常高的。
+JVM会优先加载系统lib或者用户自己配置的classpath下的jar包，然后再加载项目中的jar包。作为项目开发人员，千万不要外部包放到系统目录和classpath路径下，这是在为以后埋坑。
+
+##### java.ext.dirs
+- java.ext.dirs has a very specific use: it's used to specify where the extension mechanism loads classes from. Its used to add functionality to the JRE or to other libraries (such as JAI). It's not meant as a general-purpose class-loading mechanism.
+- Use the wildcard character * instead. It was introduced in Java 6, so many people still don't know it's possible.
+
 
 ### 执行器参数输入封装
 #### JCommander

@@ -10,6 +10,11 @@ tags:
 [TOC]
 
 ## 环境准备
+### 研发环境
+1. 下载spark代码进行编译或者下载spark-prebuild版本
+
+
+### 生产环境
 1. 拷贝mysql-connector-java-x.y.z-bin.jar到{SPARK_HOME}/jars
 2. 重启spark服务
 3. 创建hive元数据库hivedb并赋予相应权限
@@ -23,14 +28,6 @@ tags:
 hive-site.xml
 ``` xml
 <configuration>
-    <property>
-        <name>hive.zookeeper.quorum</name>
-        <value>hostname:2181</value>
-    </property>
-    <property>
-        <name>spark.sql.warehouse.dir</name>
-        <value>hdfs://hostname:8020/user/hive/warehouse</value>
-    </property>
     <property>
         <name>hive.metastore.local</name>
         <value>true</value>
@@ -58,6 +55,7 @@ hive-site.xml
     spark.eventLog.enabled              true
     spark.eventLog.dir                  hdfs://node68:8020/var/log/spark_hislog
     spark.sql.warehouse.dir             hdfs://node68:8020/user/hive/warehouse
+    spark.driver.extraJavaOptions       -XX:MaxPermSize=1024m -XX:PermSize=256m
 ```
 
 6. 运行 spark-sql 命令行客户端
