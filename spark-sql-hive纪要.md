@@ -63,7 +63,7 @@ CREATE TABLE person
 ```
 #### 数据入库【important】
 ``` scala
-  def main(args: Array[String]): Unit = {
+  def write(args: Array[String]): Unit = {
     val spark = SparkSession
       .builder()
       .appName("Spark Hive Example")
@@ -77,7 +77,7 @@ CREATE TABLE person
 
     val dbname = "learn"
     val tablename = "coder"
-    df.write.saveAsTable(s"$dbname.$tablename")
+    df.write.mode("append").saveAsTable(s"$dbname.$tablename")
 
     spark.stop()
   }
