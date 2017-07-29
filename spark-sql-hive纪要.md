@@ -61,7 +61,47 @@ CREATE TABLE person
     ssc.clearCache()
   }
 ```
+#### 数据入库【important】
+``` scala
+  def main(args: Array[String]): Unit = {
+    val spark = SparkSession
+      .builder()
+      .appName("Spark Hive Example")
+      .enableHiveSupport()
+      .master("local")
+      .getOrCreate()
 
+    val df = spark.read
+      .format("com.databricks.spark.avro")
+      .load("file:///F:\\datacenter\\output\\env\\avro\\1501234557947\\*")
+
+    val dbname = "learn"
+    val tablename = "coder"
+    df.write.saveAsTable(s"$dbname.$tablename")
+
+    spark.stop()
+  }
+```
+#### 数据出库【important】
+``` scala
+  def read(args: Array[String]): Unit = {
+    val spark = SparkSession
+      .builder()
+      .appName("Spark Hive Example")
+      .enableHiveSupport()
+      .master("local")
+      .getOrCreate()
+
+    val dbname = "learn"
+    val tablename = "coder"
+    val df = spark.read.table(s"$dbname.$tablename")
+
+    df.printSchema()
+    df.take(100).foreach(println)
+
+    spark.stop()
+  }
+```
 
 ### 研发环境
 1. 下载spark代码进行编译或者下载spark-prebuild版本，下载postgre驱动postgresql-9.0-801.jdbc4.jar[https://jdbc.postgresql.org/download/postgresql-9.0-801.jdbc4.jar]到${SPARK_HOME}/jars
