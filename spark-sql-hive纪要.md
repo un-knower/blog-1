@@ -62,6 +62,8 @@ CREATE TABLE person
   }
 ```
 #### 数据入库【important】
+##### 重要问题引入：read.table  分区方案原理？(@geting)
+
 ``` scala
   def write(args: Array[String]): Unit = {
     val spark = SparkSession
