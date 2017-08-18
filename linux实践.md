@@ -21,6 +21,22 @@ zip -rP passwork filename.zip filename  passwork是要输入的密码
 解压：unzip filename.zip 按提示输入密码  
 unzip -P passwork filename.zip passwork是要解压的密码，这个不会有提示输入密码的操作  
 
+### 文件切割合并
+#### 在Linux下用split进行文件分割：
+##### 模式一：指定分割后文件行数
+命令：split -l 300 large_file.txt new_file_prefix
+    split -l 1000 -d -a 3 ./part caseaddr
+    -l：按行分割，上面表示将caseaddr文件按1000行一个文件分割为多个文件
+    -d：添加数字后缀
+    -a 3：表示用两位数据来顺序命名
+##### 模式二：指定分割后文件大小
+命令：split -b 10m large_file.bin new_file_prefix
+
+#### 在Linux下用cat进行文件合并：
+命令：cat small_files* > large_file
+
+
+
 
 ### 网络
 
@@ -62,5 +78,5 @@ UUID="fe869305-39ac-485b-9ffe-52a4b5785b77"
 
 ##### 启动无界面
 - vim /etc/inittab
-	+ #id:5:initdefault
-	+ id:3:initdefault
+	+ #id:5:init default
+	+ id:3:init default
