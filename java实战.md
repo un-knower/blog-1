@@ -26,6 +26,130 @@ JVM会优先加载系统lib或者用户自己配置的classpath下的jar包，�
 - Use the wildcard character * instead. It was introduced in Java 6, so many people still don't know it's possible.
 
 
+
+### JUnit
+``` java
+  import org.hamcrest.core.CombinableMatcher;
+  import org.junit.Test;
+
+  import java.util.Arrays;
+
+  import static org.hamcrest.CoreMatchers.*;
+  import static org.junit.Assert.*;
+
+  /**
+   * Created by likai14 on 2017/8/18.
+   */
+  public class AssetTests {
+      @Test
+      public void testAssertArrayEquals() {
+          byte[] expected = "trial".getBytes();
+          byte[] actual = "trial".getBytes();
+          assertArrayEquals("failure - byte arrays not same", expected, actual);
+      }
+
+      @Test
+      public void testAssertEquals() {
+          assertEquals("failure - strings are not equal", "text", "text");
+      }
+
+      @Test
+      public void testAssertFalse() {
+          assertFalse("failure - should be false", false);
+      }
+
+      @Test
+      public void testAssertNotNull() {
+          assertNotNull("should not be null", new Object());
+      }
+
+      @Test
+      public void testAssertNotSame() {
+          assertNotSame("should not be same Object", new Object(), new Object());
+      }
+
+      @Test
+      public void testAssertNull() {
+          assertNull("should be null", null);
+      }
+
+      @Test
+      public void testAssertSame() {
+          Integer aNumber = Integer.valueOf(768);
+          assertSame("should be same", aNumber, aNumber);
+      }
+
+      // JUnit Matchers assertThat
+      @Test
+      public void testAssertThatBothContainsString() {
+          assertThat("albumen", both(containsString("a")).and(containsString("b")));
+      }
+
+      @Test
+      public void testAssertThatHasItems() {
+          assertThat(Arrays.asList("one", "two", "three"), hasItems("one", "three"));
+      }
+
+      @Test
+      public void testAssertThatEveryItemContainsString() {
+          assertThat(Arrays.asList(new String[]{"fun", "ban", "net"}), everyItem(containsString("n")));
+      }
+
+      // Core Hamcrest Matchers with assertThat
+      @Test
+      public void testAssertThatHamcrestCoreMatchers() {
+          assertThat("good", allOf(equalTo("good"), startsWith("good")));
+          assertThat("good", not(allOf(equalTo("bad"), equalTo("good"))));
+          assertThat("good", anyOf(equalTo("bad"), equalTo("good")));
+          assertThat(7, not(CombinableMatcher.<Integer>either(equalTo(3)).or(equalTo(4))));
+          assertThat(new Object(), not(sameInstance(new Object())));
+      }
+
+      @Test
+      public void testAssertTrue() {
+          assertTrue("failure - should be true", true);
+      }
+  }
+```
+
+### hamcrest
+#### A tour of common matchers
+Hamcrest comes with a library of useful matchers. Here are some of the most important ones.
+
+- Core
+    * anything - always matches, useful if you don't care what the object under test is
+    * describedAs - decorator to adding custom failure description
+    * is - decorator to improve readability - see "Sugar", below
+- Logical
+    * allOf - matches if all matchers match, short circuits (like Java &&)
+    * anyOf - matches if any matchers match, short circuits (like Java ||)
+    * not - matches if the wrapped matcher doesn't match and vice versa
+- Object
+    * equalTo - test object equality using Object.equals
+    * hasToString - test Object.toString
+    * instanceOf, isCompatibleType - test type
+    * notNullValue, nullValue - test for null
+    * sameInstance - test object identity
+- Beans
+    * hasProperty - test JavaBeans properties
+- Collections
+    * array - test an array's elements against an array of matchers
+    * hasEntry, hasKey, hasValue - test a map contains an entry, key or value
+    * hasItem, hasItems - test a collection contains elements
+    * hasItemInArray - test an array contains an element
+- Number
+    * closeTo - test floating point values are close to a given value
+    * greaterThan, greaterThanOrEqualTo, lessThan, lessThanOrEqualTo - test ordering
+- Text
+    * equalToIgnoringCase - test string equality ignoring case
+    * equalToIgnoringWhiteSpace - test string equality ignoring differences in runs of whitespace
+    * containsString, endsWith, startsWith - test string matching
+
+
+
+
+
+
 ### 执行器参数输入封装
 #### JCommander
 ###### Overview
@@ -226,4 +350,32 @@ Usage: <main class> [options]
     -groups         Comma-separated list of group names to be run
   * -log, -verbose  Level of verbosity (default: 1)
     -long           A long number (default: 0)
+```
+
+
+### JSON
+``` xml
+    <dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+        <version>2.8.0</version>
+    </dependency>
+```
+
+``` java
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+```
+
+### YAML
+``` xml
+    <dependency>
+        <groupId>org.yaml</groupId>
+        <artifactId>snakeyaml</artifactId>
+        <version>1.18</version>
+    </dependency>
+```
+``` java
+    InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("snap-image-info-collector.yml");
+    Yaml yaml = new Yaml();
+    Map<String, Object> object = (Map<String, Object>) yaml.load(is);
 ```
