@@ -104,6 +104,38 @@ CREATE TABLE person
     spark.stop()
   }
 ```
+#### python 开发
+- [api文档](http://spark.apache.org/docs/2.1.0/api/python/pyspark.sql.html#)
+- sqllearn.py
+``` python 
+from __future__ import print_function
+
+from os.path import expanduser, join
+
+from pyspark.sql import SparkSession
+
+if __name__ == "__main__":
+    spark = SparkSession \
+        .builder \
+        .appName("Python Spark SQL Hive integration example") \
+        .enableHiveSupport() \
+        .getOrCreate()
+
+    df = spark.sql("show databases")
+    df.show()
+
+    df1 = spark.read.table("learn.learn_demo")
+
+    df1.write.csv("file:////usr/local/envTech/datas", "append")
+    df1.write.saveAsTable("learn.datas")
+
+    spark.stop()
+```
+
+``` shell
+spark-submit ./sqllearn.py
+```
+
 
 ### 研发环境
 1. 下载spark代码进行编译或者下载spark-prebuild版本，下载postgre驱动postgresql-9.0-801.jdbc4.jar[https://jdbc.postgresql.org/download/postgresql-9.0-801.jdbc4.jar]到${SPARK_HOME}/jars
