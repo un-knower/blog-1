@@ -13,6 +13,42 @@ tags: solr
  <delete><query>*:*</query></delete><commit/> 
 ```
 
+- spark DataFrame直接写入solr
+``` xml
+    <dependency>
+        <groupId>com.lucidworks.spark</groupId>
+        <artifactId>spark-solr</artifactId>
+        <version>3.0.0-alpha</version>
+    </dependency>
+```
+``` scala
+    val builder = SparkSession
+      .builder()
+      .appName(AppArgs.appName)
+
+    if (AppArgs.debug) {
+      builder.master("local")
+    }
+
+    val spark = builder.getOrCreate()
+    val df = run(spark).select("Address", "LATB", "LNGB").filter(caseFilter(_))
+    df.printSchema()
+    printf(s"数据量为：${df.count()}")
+    df.show(10)
+
+    val options = Map(
+      "zkhost" -> "10.17.139.66:2181/solr",
+      "collection" -> "zsmap",
+      "gen_uniq_key" -> "true" // Generate unique key if the 'id' field does not exist
+    )
+
+    // Write to Solr
+    df.write.format("solr").options(options).mode(org.apache.spark.sql.SaveMode.Overwrite).save
+
+    spark.stop()
+```
+
+
 
 ``` scala
   /**
