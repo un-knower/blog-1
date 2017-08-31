@@ -80,7 +80,9 @@ Register a repository bookmark and exchange version history
 
 #### git status -s 中文乱码
 - 通过将Git配置变量 core.quotepath 设置为false，就可以解决中文文件名称在这些Git命令输出中的显示问题，
-	+ git config --global core.quotepath false
+	+ 解决方法：git config --global core.quotepath false
+    + 乱码场景："\346\225\260\346\215\256\350\265\204\344\272\247\347\256\241\347\220\206.vsdx"
+    + 解释：core.quotepath设为false的话，就不会对0x80以上的字符进行quote
 
 
 ## 教程验证实践
