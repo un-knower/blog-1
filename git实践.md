@@ -84,6 +84,20 @@ Register a repository bookmark and exchange version history
     + 乱码场景："\346\225\260\346\215\256\350\265\204\344\272\247\347\256\241\347\220\206.vsdx"
     + 解释：core.quotepath设为false的话，就不会对0x80以上的字符进行quote
 
+##### Git如何永久删除文件(包括历史记录)
+- 从你的资料库中清除文件
+    + git filter-branch --force --index-filter 'git rm --cached --ignore-unmatch diagram/helloword.vsdx' --prune-empty --tag-name-filter cat -- --all
+- 推送我们修改后的repo
+    + git push origin master --force
+- 清理和回收空间
+    + rm -rf .git/refs/original/
+    + git reflog expire --expire=now --all
+    + git gc --prune=now
+    + git gc --aggressive --prune=now
+
+
+
+
 
 ## 教程验证实践
 
