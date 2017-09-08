@@ -4,16 +4,12 @@ date: 2017-07-20 19:40:21
 tags: solr
 ---
 
-``` shell
-    ${SOLR_HOME}/server/scripts/cloud-scripts/zkcli.bat -zkhost localhost:9983 -cmd upconfig -confdir ${SOLR_HOME}/server/solr/configsets/map/conf -confname map
-
-```
-
+### 删除数据
 ``` xml
  <delete><query>*:*</query></delete><commit/> 
 ```
 
-- spark DataFrame直接写入solr
+### spark DataFrame直接写入solr
 ``` xml
     <dependency>
         <groupId>com.lucidworks.spark</groupId>
@@ -48,8 +44,7 @@ tags: solr
     spark.stop()
 ```
 
-
-
+### 查询接口
 ``` scala
   /**
     * 查询入口
@@ -106,11 +101,20 @@ tags: solr
 - 指定zkhost：
   + vim /etc/default/solr.in.sh 
   + 修改添加：ZK_HOST="localhost:2181/solr"
+- 问题：zknode /solr not found
+  + 解决：通过${ZOOKEEPER_HOME}/bin/zkCli.sh
+    * create /solr data
+    * 继续上传solr配置文件
 - 验证：sudo service solr status
 - 问题记录：
   + root用户安装之后，启动solr service solr restart，报错：
     * 解决方案：vim ${SOLR_HOME}/bin/solr        -- line 1350 FORCE=false 改为 FORCE=true
 - copyfiled stored=false
+
+### 上传solr配置文件
+``` shell
+    ${SOLR_HOME}/server/scripts/cloud-scripts/zkcli.bat -zkhost localhost:9983 -cmd upconfig -confdir ${SOLR_HOME}/server/solr/configsets/map/conf -confname map
+```
 
 ### create collection
 问题：Cannot create collection mapzs. Value of maxShardsPerNode is 1,
