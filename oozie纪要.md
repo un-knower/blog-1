@@ -45,9 +45,9 @@ toc: true
 ### oozie安装
 1. oozie功能测试
 2. 无非3种安装模式
-    1. cdh 等提供的cloudera manager 安装方式，文档简单具体；真他妈的猿性化
-    2. 原生oozie官网的源码编译模式，文档清晰明了；真他妈的猿性化
-    3. 自己公司的安装方法模式，chedan
+    1. cdh 等提供的cloudera manager 安装方式，文档简单具体；
+    2. 原生oozie官网的源码编译模式，文档清晰明了；
+    3. 自己公司的安装方法模式
 3. export OOZIE_URL=http://localhost:11000/oozie
 4. oozie job -config ./job.properties -run
 5. oozie job -kill buddle_id | coord_id | wf_id 
