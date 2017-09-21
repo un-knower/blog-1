@@ -11,8 +11,8 @@ tags:
 
 ## 环境准备
 ### 数据测试
-avro schema：
-``` console person.avsc
+avro schema(person.avsc)：
+``` console
 {
 "namespace": "com.chaosdata",
  "type": "record",
@@ -1860,7 +1860,8 @@ nativeio.NativeIO$Windows.createDirectoryWithMode0(Ljava/lang/String;I)V
 ```
 解决方案：原因：是你的hadoop.dll 文件和你当前的hadoop版本不匹配
 
-## Spark SQL Reference
+
+## [Spark SQL Reference](https://docs.databricks.com/spark/latest/spark-sql/index.html)
 ### Spark SQL Language Manual
 #### Alter Database
 ``` sql
