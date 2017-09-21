@@ -216,6 +216,11 @@ exceltk用例
 - F11 全屏模式
 - Shift+F11 免打扰模式
 
+### 破解
+http://ltcy.mqego.com/sublimetext.zip
+
+### 插件
+
 
 
 ## hexo
