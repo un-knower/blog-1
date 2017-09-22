@@ -60,6 +60,20 @@ toc: true
 ```
 
 
+## 使用收藏
+### collection相关
+#### collection reduceByKey
+``` scala
+    case class Pioneer(startDate:Date, endDate:Date, count:Long, tableId:Int)
+
+    val buffer = getPioneers()
+
+    buffer.map(e => (e.getTableId, e)).groupBy(_._1).map { case (key, values) =>
+      (key, values.map(_._2).reduce((l, r) => if (l.getEndDate.after(r.getEndDate)) l else r))
+    }
+```
+
+
 
 ## 问题记录
 1. scala java 混合调用编译
