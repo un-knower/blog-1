@@ -146,7 +146,67 @@ Hamcrest comes with a library of useful matchers. Here are some of the most impo
     * containsString, endsWith, startsWith - test string matching
 
 
+### quartz
+- pom.xml
+``` xml
+    <dependency>
+        <groupId>com.hikvision.sparta</groupId>
+        <artifactId>sparta-vulcanus-bigdata</artifactId>
+        <version>${vulcanus.version}</version>
+    </dependency>
 
+    <dependency>
+        <groupId>org.quartz-scheduler</groupId>
+        <artifactId>quartz</artifactId>
+        <version>${quartz.version}</version>
+    </dependency>
+```
+
+- Executor
+``` java
+    public class DataThoroughlyJobExecutor {
+        private static final Logger LOG = LoggerFactory.getLogger(DataThoroughlyJobExecutor.class);
+
+        public static void main(String[] args) {
+            String cronExp = (args != null && args.length == 1) ? args[0].replaceAll("-", " ") : "0 0/30 * * * ?";
+
+            LOG.info("定时任务crontab表达式为：" + cronExp);
+
+            JobDetail job = newJob(DataThoroughlyJob.class).withIdentity("data thoroughly job", "data thoroughly group").build();
+            CronTrigger trigger = newTrigger().withIdentity("data thoroughly trigger", "data thoroughly group").withSchedule(cronSchedule(cronExp)).startNow().build();
+
+            Scheduler sched = null;
+            try {
+                SchedulerFactory sf = new StdSchedulerFactory();
+                sched = sf.getScheduler();
+                sched.scheduleJob(job, trigger);
+
+                sched.start();
+
+                Thread.sleep(3600L * 1000L * 48);
+            } catch (SchedulerException e) {
+                LOG.error("任务调度程序启动失败", e);
+            } catch (InterruptedException ie) {
+                LOG.error("程序休眠失败", ie);
+            }
+        }
+    }
+```
+
+- Job
+``` java
+    public class DataThoroughlyJob implements Job {
+        private final static Logger LOG = LoggerFactory.getLogger(DataThoroughlyJob.class);
+
+        @Override
+        public void execute(JobExecutionContext context) throws JobExecutionException {
+            LOG.info("----- ...任务开始执行.");
+
+
+            LOG.info("----- ...任务执行成功结束.");
+        }
+    }
+```
 
 
 
