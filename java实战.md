@@ -8,6 +8,100 @@ toc: true
 
 [TOC]
 
+## java install & config
+- 直接下载java distribution binary发行版安装tar，并解压到指定目录
+- 配置环境变量
+``` shell
+export JAVA_HOME=/usr/lib/java/jdk1.7.0_79  #具体路径根据实际情况而定
+# export JAVA_HOME=/usr/lib/java/jdk1.8.0_101
+export CLASSPATH=.:$JAVA_HOME/jre/lib/rt.jar:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+export PATH=$PATH:$JAVA_HOME/bin
+```
+- 问题：Unsupported major.minor version 52.0
+  + java版本过低，请升级到1.8.x
+
+
+## webservice
+### 根据WADL生成REST风格WebService的客户端代码
+- SOAP风格的WebService可以根据WSDL，用apache-cxf自带的wsdl2java工具生成客户端代码。
+- 而REST风格WebService也有类似WSDL的WADL，通过发布路径后面加上“?_wadl”获得，而且在apache-cxf里面与wsdl2java相同的目录，也有一个wadl2java工具，大家可能已经想到，可以用类似的方式来生成REST风格WebService的客户端代码：
+  + wadl2java -d <output-directory> -p <package-name> url  // 生成ws客户端代码，用于发布使用的
+
+### 实践总结
+1. 结果数据按规则路劲，格式化落地存储
+  a. 格式化文件结果Writer及writeCache(配合规则路劲用map<pathStr, Writer>)
+2. 用postman测试接口及接口参数；然后在代码中将功能测试通过的接口予以实现
+  a. 参数封装及encode(将分页功能通过参数封装予以实现)
+3. 整体流程封装
+
+- webservice postman生成代码(核心：com.squareup.okhttp)核心逻辑
+``` java
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.squareup.okhttp.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+
+/**
+ * Description:webservice访问代码客户端，基于postman 的技术方案
+ * <p>
+ */
+
+public class WebServiceClient {
+    static Logger LOG = LoggerFactory.getLogger(WebServiceClient.class);
+
+    static OkHttpClient client = new OkHttpClient();
+    static MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+
+    static JsonParser jsonParser = new JsonParser();
+
+    /**
+     * @param url
+     * @param paramsJson
+     * @return
+     * @throws IOException
+     */
+    public static Response request(String url, String paramsJson) throws IOException {
+        RequestBody body = RequestBody.create(mediaType, paramsJson);
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .addHeader("content-type", "application/x-www-form-urlencoded")
+                .addHeader("cache-control", "no-cache")
+                .build();
+
+        Response response = client.newCall(request).execute();
+
+        // 便于测试
+        //        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        //        System.out.println(gson.toJson(response));
+
+        if (response.isSuccessful()) {
+            return response;
+        } else {
+            throw new IOException("Unexpected code " + response);
+        }
+    }
+
+    public static JsonObject requestJsonData(String url, String paramsJson) throws IOException {
+        return jsonParser.parse(new String(request(url, paramsJson).body().bytes())).getAsJsonObject().getAsJsonObject("jsonData");
+    }
+
+}
+```
+
+
+
+### Java下载文件时处理中文 使用URLEncoder编码后 空格变+号的问题
+``` java
+fileName = URLEncoder.encode(fileName, "utf-8")
+fileName = fileName.Replace("+", "%20");  encode后替换  解决空格问题
+response.addHeader("Content-Disposition", "attachment;filename=" + fileName, "utf-8");
+```
+
+
 ### PACKAGE
 #### shade
 
@@ -439,3 +533,4 @@ Usage: <main class> [options]
     Yaml yaml = new Yaml();
     Map<String, Object> object = (Map<String, Object>) yaml.load(is);
 ```
+
