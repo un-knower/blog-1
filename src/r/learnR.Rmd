@@ -1,0 +1,57 @@
+## R in action
+
+1. 创建变量
+```{r eval=FALSE, tidy=TRUE}
+value_name <- value_expre #eg: name <- kailee 标量
+y <- matrix(1:20, nrow=5, ncol=4)   #创建矩阵
+z <- array(1:24, c(4, 6))   #创建数组
+                            #列表就是一些对象（或成分，component）的有序集合
+```
+  + 变量重命名: fix(leadership)
+  + 缺失值: NA #Not Available
+    * 重编码值的缺失值: name[name == kailee] <- NA
+    * 排除缺失值: na.omit() #eg: na.omit(name)
+
+***
+
+2. 日期值
+  + date <- as.Date(date_str, "format")
+  + format
+    * %d    01-31
+    * %m    00-12
+    * %y    yy
+    * %Y    yyyy
+  + default format: yyyy-mm-dd
+  + date_str <- as.character(date)
+  
+***
+
+3. 类型转换
+  + is.numeric()   as.numeric()
+  + is.character()   as.character()
+  + is.vector()   as.vector()
+  + is.matrix()   as.matrix()
+  + is.data.frame()   as.data.frame()
+  + is.factor()   as.factor()
+  + is.logical()   as.logical()
+
+***
+
+4. 数据框 data.frame
+  + 创建data.frame:
+```{r eval=TRUE, echo=TRUE, tidy=TRUE, warning=FALSE, message=FALSE}
+manager <- c(1, 2, 3, 4, 5)   #c()   可用来创建向量
+date <- c("10/24/08", "10/28/08", "10/1/08", "10/12/08", "5/1/09")
+country <- c("US", "US", "UK", "UK", "UK")
+gender <- c("M", "F", "F", "M", "F")
+age <- c(32, 45, 25, 39, 99)
+
+df <- data.frame(manager, date, country, gender, age)
+df
+```
+  + 使用sql:  
+```{r eval=TRUE, echo=TRUE, tidy=TRUE, warning=FALSE, message=FALSE}
+library(sqldf) #install.packages("sqldf"),需要打开代理
+newdf <- sqldf("select * from df where manager=1", row.names=TRUE)
+newdf
+```
