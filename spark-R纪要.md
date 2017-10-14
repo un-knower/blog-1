@@ -140,6 +140,56 @@ sparkR.session.stop()
     plot(res$count, res$unique_count, xlab="count()", ylab="unique()", main="graph_count_unique")
 ```
 
+- 注意RStudio 提供的compile & report功能
+``` r
+dataTrend <- function(tableId, con) {
+  res <-
+    dbGetQuery(
+      con,
+      paste(
+        "SELECT date_format(start_date,'%m-%d') as day, count, table_id FROM vulcanus_10_13.data_load_pioneer where table_id = ",
+        tableId,
+        ";",
+        sep = ""
+      )
+    )
+  res$day <- as.Date(res$day, "%m-%d")
+  plot(
+    x = res$day,
+    y = res$count,
+    xlab = "day()",
+    ylab = "count()",
+    xlim = NULL,
+    ylim = NULL,
+    type = "b",
+    main = paste("data lines trend for table: ", tableId, sep = "")
+  )
+}
+
+library(RMySQL)
+con <-
+  dbConnect(
+    MySQL(),
+    host = "master66",
+    dbname = "vulcanus_10_13",
+    user = "root",
+    password = "Hik12345+"
+  )
+
+tableIds = dbGetQuery(
+  con,
+  "select a.table_id from (select distinct table_id, count(*) as count FROM vulcanus_10_13.data_load_pioneer group by table_id) a where a.count > 3;"
+)
+
+for (table in tableIds$table_id) {
+  dataTrend(table, con)
+}
+
+dbDisconnect(con)
+```
+
+
+
 #### 
 
 ## 命令积累
@@ -221,6 +271,18 @@ install.packages("xtable")
 
 
 #### 探索R的世界
+
+
+
+
+
+## 问题记录
+1. pandoc.exe: pdflatex not found. pdflatex is needed for pdf output.
+错误: pandoc document conversion failed with error 41
+此外: There were 50 or more warnings (use warnings() to see the first 50)
+停止执行
+- 需求:R脚本通过RStudio compile&report 生成pdf格式结果文件
+- 解决办法:
  
 
 
