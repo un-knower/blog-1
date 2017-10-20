@@ -1,5 +1,9 @@
 ## R in action
 
+- R是一种面向函数式编程语言
+  + 泛型函数: 探讨了把函数作为参数和和把向量作为结果返回
+  + 函数运算符: 探讨了把函数作为参数进行输入和输出
+
 1. 创建变量
 ```{r eval=FALSE, tidy=TRUE}
 value_name <- value_expre #eg: name <- kailee 标量
@@ -7,10 +11,10 @@ y <- matrix(1:20, nrow=5, ncol=4)   #创建矩阵
 z <- array(1:24, c(4, 6))   #创建数组
                             #列表就是一些对象（或成分，component）的有序集合
 ```
-  + 变量重命名: fix(leadership)
+  + 变量重命名: fix(name)
   + 缺失值: NA #Not Available
     * 重编码值的缺失值: name[name == kailee] <- NA
-    * 排除缺失值: na.omit() #eg: na.omit(name)
+    * 排除缺失值: na.omit() #eg: na.omit(name) ,  是否缺失值is.na(name)
 
 ***
 
@@ -55,3 +59,125 @@ library(sqldf) #install.packages("sqldf"),需要打开代理
 newdf <- sqldf("select * from df where manager=1", row.names=TRUE)
 newdf
 ```
+
+***
+
+1. 数学函数
+  + abs(x)
+  + sqrt(x)
+  + ceiling(x)
+  + floor(x)
+  + trunc(x)
+  + round(x, digits=n)
+  + signif(x, digits=n)
+  + cos(x) sin(x) tan(x)
+  + acos(x) asin(x) atan(x)
+  + cosh(x) sinh(x) tanh(x)
+  + log(x, base=n)
+  + log(x)
+  + log10(x)
+  + exp(x)
+  
+2. 统计函数
+  + mean(x)
+  + median(x)
+  + sd(x)
+  + var(x)
+  + mad(x)
+  + quantile(x, probs)
+  + range(x)
+  + sum(x)
+  + diff(x, lag=n)
+  + min(x)
+  + max(x)
+  + scale(x, center=TRUE, scale=TRUE)
+  
+3. 概率函数
+  - [dpqr]distribution_abbreviation()
+    + d density密度函数
+    + p distribution分布函数
+    + q quantile分位数函数
+    + r random生成随机数
+    
+    - 概率分布
+      * beta
+      * binom
+      * cauchy
+      * chisq
+      * exp
+      * f
+      * gamma
+      * geom
+      * hyper
+      * lnorm
+      * logis
+      * multinom
+      * nbinom
+      * norm
+      * pois
+      * signrank
+      * t
+      * unif
+      * weibull
+      * wilcox
+      
+4. 字符处理函数
+  + nchar(x)
+  + substr(x, start, stop)
+  + grep(pattern, x, ingore.case=FALSE, fixed=FALSE)
+  + sub(pattern, replacement, x, ingore.case=FALSE, fixed=FALSE)
+  + strsplit(pattern, x, split, fixed=FALSE)
+  + paste(..., sep="")
+  + toupper(x)
+  + tolower(x)
+  
+5. 其他实用函数
+  + length(x)
+  + seq(from, to, by)
+  + rep(x, n)
+  + cut(x, n)
+  + pretty(x, n)
+  + cat(..., file="myfile", append=FALSE)
+  
+  
+***
+
+1. 控制流
+  + for loop: for(var in seq) statement
+```{r eval=TRUE, echo=TRUE, tidy=TRUE, warning=FALSE, message=FALSE}
+for(i in 1:10)   print("hello")
+```  
+  + while loop: while(cond) statement
+```{r eval=TRUE, echo=TRUE, tidy=TRUE, warning=FALSE, message=FALSE}
+i <- 10
+while(i > 0) {
+  print("hello")
+  i <- i-1
+}
+```
+
+2. 条件执行
+  + if-else: if(cond) statement1 else statement2
+  + ifelse: ifelse(cond, statement1, statement2)
+  + switch: switch(var, key1=val1, key2=val2, ...)
+  
+3. 函数
+```{r eval=TRUE, echo=TRUE, tidy=TRUE, warning=FALSE, message=FALSE}
+func_name <- function(args) {
+  print(paste("hello ", args, sep = ""))
+  result <- 1
+  return(result)
+}
+
+func_name("datakai") #函数调用
+```
+
+4. dataframe 整合与重构
+  + 转置: t(df)
+  + 整合: aggregate(df, by, func)   eg:aggregate(df, by=list(col1, col2), FUN=mean, na.rm=TRUE)
+  + reshape2包 #install.packages("reshape2")
+  
+***
+
+
+
