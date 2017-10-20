@@ -83,3 +83,13 @@ toc: true
 
 
 ### 模式匹配
+
+
+## 常用maven依赖
+``` xml
+<dependency>
+    <groupId>com.twitter</groupId>
+    <artifactId>util-core_2.11</artifactId>
+    <version>7.1.0</version>
+</dependency>
+```
