@@ -188,6 +188,27 @@ for (table in tableIds$table_id) {
 dbDisconnect(con)
 ```
 
+- 经纬度地图可视化
+``` R
+data <- read.table("F:/work/newData/lalo.txt", sep = " ", head = FALSE)
+data$V1 <- as.numeric(data$V1)
+data$V2 <- as.numeric(data$V2)
+
+library(ggmap)
+library(mapproj)
+
+
+# 画图
+# 因为 Google map api 不能使用，只好手动加载背景图。
+
+#中国的经纬度信息
+#China <- c(left = 118, bottom = 25, right = 130, top = 32)
+China <- c(left = 121, bottom = 29, right = 124, top = 31)
+Map <- get_stamenmap(China, zoom = 10, maptype = "toner-lite")
+ggmap(Map, extent = "device") +
+  geom_point(data = data, aes(x = V2, y = V1), color = "red", alpha = 0.1) 
+```
+
 
 
 #### 
@@ -197,6 +218,11 @@ dbDisconnect(con)
 install.packages("ggplot2")
 install.packages("rmarkdown")
 install.packages("xtable")
+
+
+install.packages('maps')
+install.packages('ggmap')
+
 ```
 
 ## 读书纪要
