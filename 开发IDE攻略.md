@@ -11,6 +11,15 @@ toc: true
 
 ## intellij idea
 
+### plugin
+- Scala
+- Java Decompiler IntelliJ Plugin 
+- Alibaba Java Coding Guidelines
+- Markdown Navigator
+- Maven Helper
+- Statistic
+- PlantUML integration
+
 #### 文件注释模板
 ##### 实现
 - File --> Settings --> Editor --> File and Code Templates 
