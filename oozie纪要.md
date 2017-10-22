@@ -10,6 +10,10 @@ toc: true
 
 [TOC]
 
+## 使用经验
+- catch-up mode (job's start time is in the past): 当开始时间小于当前时间，以前的定时任务也会被执行
+
+
 ### 对比
 #### 对比Oozie以及Azkaban，个人觉得选择Oozie作为流程引擎的选型比较好，理由如下：
 1. Oozie是基于Hadoop系统进行操作，而Azkaban是基于命令行进行操作。使用hadoop提供的第三方包JobClient比直接在底层跑shell命令开发成本小，可能遇到的坑也少（一个是基于平台，一个是基于系统）。
@@ -363,6 +367,7 @@ oozie help      : display usage
 oozie version   : show client version
 
 #### Oozie job operation commands
+``` shell
 oozie job <OPTIONS>           : job operations
           -action <arg>         coordinator rerun/kill on action ids (requires -rerun/-kill);
                                 coordinator log retrieval on action ids (requires -log)
@@ -433,8 +438,9 @@ oozie job <OPTIONS>           : job operations
           -sladisable           disables sla alerts for the job and its children
           -slaenable            enables sla alerts for the job and its children
           -slachange            Update sla param for jobs, supported param are should-start, should-end and max-duration
-
+```
 #### Oozie jobs operation commands
+``` shell
 oozie jobs <OPTIONS>          : jobs status
            -auth <arg>          select authentication type [SIMPLE|KERBEROS]
            -doas <arg>          doAs user, impersonates as the specified user.
@@ -456,8 +462,10 @@ oozie jobs <OPTIONS>          : jobs status
                                 other options, it will resume all the first 50 workflow jobs. Command will fail if one or more
                                 of the jobs is in wrong state.
            -verbose             verbose mode
+```
 
 #### Oozie admin operation commands
+``` shell
 oozie admin <OPTIONS>         : admin operations
             -auth <arg>         select authentication type [SIMPLE|KERBEROS]
             -configuration      show Oozie system configuration
@@ -475,7 +483,7 @@ oozie admin <OPTIONS>         : admin operations
             -systemmode <arg>   Supported in Oozie-2.0 or later versions ONLY. Change oozie
                                 system mode [NORMAL|NOWEBSERVICE|SAFEMODE]
             -version            show Oozie server build version
-
+```
 #### Oozie validate command
 oozie validate <OPTIONS> <ARGS>   : validate a workflow, coordinator, bundle XML file
                      -auth <arg>    select authentication type [SIMPLE|KERBEROS]
@@ -1347,4 +1355,234 @@ CHANGE COLUMN `execution_path` `execution_path` VARCHAR(65532) CHARACTER SET 'ut
 17. oozie yarn-cluster spark
 ``` console
  diagnostics: User class threw exception: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'ConfDictElemService': Injection of autowired dependencies failed; nested exception is org.springframework.beans.factory.BeanCreationException: Could not autowire field: private com.hikvision.sparta.etl.db.mappers.ConfDictElemMapper com.hikvision.sparta.etl.db.service.impl.ConfDictElemServiceImpl.confDictElemMapper; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'confDictElemMapper' defined in URL [jar:file:/mnt/ssd1/data/LOCALCLUSTER/SERVICE-HADOOP-79dbed26cf7f49729e42a75f0f84c3e7/nm/local/usercache/root/filecache/339/sparta-vulcanus-load.jar!/com/hikvision/sparta/etl/db/mappers/ConfDictElemMapper.class]: Unsatisfied dependency expressed through bean property 'sqlSessionFactory': : Error creating bean with name 'sqlSessionFactory' defined in class path resource [applicationContext-etldb.xml]: Invocation of init method failed; nested exception is org.springframework.core.NestedIOException: Failed to parse mapping resource: 'URL [jar:file:/mnt/disk1/data/LOCALCLUSTER/SERVICE-HADOOP-79dbed26cf7f49729e42a75f0f84c3e7/nm/local/usercache/root/appcache/application_1498183093431_1151/container_1498183093431_1151_02_000001/__app__.jar!/mappers/ConfDictElemMapper.xml]'; nested exception is org.apache.ibatis.builder.BuilderException: Error parsing Mapper XML. Cause: java.lang.IllegalArgumentException: Result Maps collection already contains value for com.hikvision.sparta.etl.db.mappers.ConfDictElemMapper.BaseResultMap; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'sqlSessionFactory' defined in class path resource [applicationContext-etldb.xml]: Invocation of init method failed; nested exception is org.springframework.core.NestedIOException: Failed to parse mapping resource: 'URL [jar:file:/mnt/disk1/data/LOCALCLUSTER/SERVICE-HADOOP-79dbed26cf7f49729e42a75f0f84c3e7/nm/local/usercache/root/appcache/application_1498183093431_1151/container_1498183093431_1151_02_000001/__app__.jar!/mappers/ConfDictElemMapper.xml]'; nested exception is org.apache.ibatis.builder.BuilderException: Error parsing Mapper XML. Cause: java.lang.IllegalArgumentException: Result Maps collection already contains value for com.hikvision.sparta.etl.db.mappers.ConfDictElemMapper.BaseResultMap
+```
+
+
+# oozie实践文档
+
+### 通过cm安装oozie
+1. 下载编译好的oozie-bin.tar.gz lark包，eg:[下载链接](http://maven.hikvision.com.cn/nexus/content/repositories/public/com/hikvision/bigdata/archives/v1/lark-packages/oozie/)
+2. 将上步骤的tar文件解压放入该路径下：/usr/lib/cloudmanager/components/lark/packages
+3. 打开cm web页面 eg：[master66 cluster manager](http://10.17.139.66:8877/cm/)
+4. 依次点击 主机管理-->服务管理-->添加服务-->oozie-->服务名称前面勾选-->实例个数填1-->下一步-->部署
+
+
+### 配置oozie环境变量
+1. vim /etc/profile
+
+``` shell
+OOZIE_HOME=/usr/lib/LOCALCLUSTER/SERVICE-OOZIE-288ed77a9280405bae56627fb52ea305
+export OOZIE_HOME PATH=$PATH:$OOZIE_HOME/bin
+export OOZIE_URL=http://localhost:11000/oozie
+```
+
+### 配置oozie使用mysql数据库
+1. 创建mysql的oozie数据库
+
+``` sql
+    create database ooziedb;
+    grant all privileges on *.* to oozie@'localhost' identified by 'Hik12345+' with grant option;
+    grant all privileges on *.* to oozie@'%' identified by 'Hik12345+' with grant option;
+    flush privileges;
+```
+
+2. 编辑oozie配置文件
+vim /etc/LOCALCLUSTER/SERVICE-OOZIE-288ed77a9280405bae56627fb52ea305/oozie-site.xml
+
+``` xml
+        <property>
+            <name>oozie.db.schema.id</name>
+            <value>ooziedb</value>
+        </property>
+        <property>
+            <name>oozie.service.JPAService.create.db.schema</name>
+            <value>true</value>
+        </property>
+        <property>
+            <name>oozie.service.StoreService.jdbc.driver</name>
+            <value>com.mysql.jdbc.Driver</value>
+        </property>
+        <property>
+            <name>oozie.service.StoreService.jdbc.url</name>
+            <value>jdbc:mysql://localhost:3306/ooziedb</value>
+        </property>
+        <property>
+            <name>oozie.service.StoreService.jdbc.username</name>
+            <value>oozie</value>
+        </property>
+        <property>
+            <name>oozie.service.StoreService.jdbc.password</name>
+            <value>Hik12345+</value>
+        </property>
+```
+
+3. 拷贝mysql-connector-java-x.y.z.jar到/usr/lib/LOCALCLUSTER/SERVICE-OOZIE-288ed77a9280405bae56627fb52ea305/libtools/
+4. 重启
+5. 改变ooziedb的表结构
+
+``` sql
+ALTER TABLE `ooziedb`.`WF_ACTIONS` 
+CHANGE COLUMN `execution_path` `execution_path` MEDIUMTEXT CHARACTER SET 'utf8' COLLATE 'utf8_unicode_ci' NULL DEFAULT NULL ;
+```
+
+### oozie sharelib部署
+1. 创建目录：
+    a. mkdir /usr/local/envTch/oozieJob
+    b. mkdir /usr/local/envTch/oozieJob/test #用于运行wordcount
+    c. mkdir /usr/local/envTch/oozieJob/loadJob #用于运行实际数据资产层任务
+    d. mkdir /usr/local/envTch/oozieJob/sharelib #用于存放sharelib tar包
+2. 拷贝已编译好的oozie-sharelib-4.1.0-cdh5.11.0-sharelib.tar.gz到/usr/local/envTch/oozieJob/sharelib
+3. 安装部署sharelib
+    a. /usr/lib/LOCALCLUSTER/SERVICE-OOZIE-288ed77a9280405bae56627fb52ea305/bin/oozie-setup.sh sharelib create -fs hdfs://hdh94:8020 -locallib ./oozie-sharelib-4.1.0-cdh5.11.0-sharelib.tar.gz
+
+
+### word任务准备及测试
+1. 创建hdfs目录
+
+    a. hadoop dfs -mkdir /dev/oozieJob/cron
+    b. hadoop dfs -mkdir /dev/oozieJob/cron/test
+2. 上传job workflow相关文件
+
+    a. hadoop dfs -put ./workflow.xml /dev/oozieJob/cron/test
+3. 适当更改job配置信息: vim ./job.properties 
+4. 启动相关服务
+
+    a. mr-jobhistory-daemon.sh start historyserver #启动yarn historyserver
+5. 运行wordcount test job任务
+
+    a. 准备测试数据
+        1. 创建目录:/dev/datacenter/input/env/
+        2. 上传文件:hadoop dfs -put ./input.txt /dev/datacenter/input/env/
+    b. 运行提交任务:oozie job -oozie http://localhost:11000/oozie -config ./job.properties -run
+    c. 查看是否成功
+        1. oozie web:http://10.33.36.94:11000/oozie/
+        2. 
+    d. kill任务:oozie job -oozie http://localhost:11000/oozie -kill w_id | c_id
+
+### 实例
+- job.properties
+``` shell
+nameNode=hdfs://master:8020
+jobTracker=master:18040
+queueName=default
+
+#oozie.coord.application.path=${nameNode}/dev/oozieJob/cron/incre #定时任务
+oozie.wf.application.path=${nameNode}/dev/oozieJob/cron/incre #workflow任务
+start=2017-06-07T02:00+0800
+end=2017-06-07T03:00+0800
+workflowAppUri=${nameNode}/dev/oozieJob/cron/incre
+oozie.use.system.libpath=true
+
+frequency=*/15 * * * *
+master=yarn
+deploy_mode=client
+load_jar_path=/usr/local/envTch/oozieJob/increload/load-assembly.jar
+load_class_name=com.chaosdata.etl.load.dataload.DataLoad
+spark_opts=--num-executors 3 --executor-cores 1 --executor-memory 1G --driver-memory 512m --conf spark.yarn.historyServer.address=http://master:18088 --conf spark.eventLog.dir=hdfs://master:8020/var/log/spark_hislog --conf spark.eventLog.enabled=true
+
+map_memory_mb=2048
+map_java_opts=-XX:MaxPermSize=1g
+am_resource_mb=1536
+am_command_opts=-Xmx1024m
+```
+
+- workflow.xml
+``` xml
+<workflow-app name="increment-load-wf" xmlns="uri:oozie:workflow:0.5">
+    <global>
+            <configuration>
+                <property>
+                    <name>mapred.compress.map.output</name>
+                    <value>true</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.mapreduce.map.memory.mb</name>
+                    <value>${map_memory_mb}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.mapreduce.map.java.opts</name>
+                    <value>${map_java_opts}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.yarn.app.mapreduce.am.resource.mb</name>
+                    <value>${am_resource_mb}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.yarn.app.mapreduce.am.command-opts</name>
+                    <value>${am_command_opts}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.mapred.job.queue.name</name>
+                    <value>default</value>
+                </property>
+            </configuration>
+    </global>
+
+    <start to='L_1'/>
+    <action name="L_1">
+        <spark xmlns="uri:oozie:spark-action:0.1">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <master>${master}</master>
+            <mode>${deploy_mode}</mode>
+            <name>L_1</name>
+            <class>${load_class_name}</class>
+            <jar>${load_jar_path}</jar>
+            <spark-opts>${spark_opts}</spark-opts>
+            <arg>--originTableId</arg>
+            <arg>1</arg>
+        </spark>
+        <ok to="L_22"/>
+        <error to="kill"/>
+    </action>
+
+    <action name="L_22">
+        <spark xmlns="uri:oozie:spark-action:0.1">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <master>${master}</master>
+            <mode>${deploy_mode}</mode>
+            <name>L_22</name>
+            <class>${load_class_name}</class>
+            <jar>${load_jar_path}</jar>
+            <spark-opts>${spark_opts}</spark-opts>
+            <arg>--originTableId</arg>
+            <arg>22</arg>
+        </spark>
+        <ok to="end"/>
+        <error to="kill"/>
+    </action>
+
+    <kill name='kill'>
+        <message>Something went wrong: ${wf:errorCode('firstdemo')}</message>
+    </kill>
+    <end name='end'/>
+
+</workflow-app>
+```
+
+- coordinator.xml
+``` xml
+<coordinator-app name="cron-wc-coord" frequency="${frequency}" start="${start}" end="${end}" timezone="Asia/Shanghai"
+                 xmlns="uri:oozie:coordinator:0.2">
+        <action>
+        <workflow>
+            <app-path>${workflowAppUri}</app-path>
+            <configuration>
+                <property>
+                    <name>jobTracker</name>
+                    <value>${jobTracker}</value>
+                </property>
+                <property>
+                    <name>nameNode</name>
+                    <value>${nameNode}</value>
+                </property>
+                <property>
+                    <name>queueName</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+        </workflow>
+    </action>
+</coordinator-app>
 ```

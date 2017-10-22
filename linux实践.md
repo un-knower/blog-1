@@ -4,6 +4,16 @@ date: 2017-07-22 18:28:28
 tags:
 ---
 
+## 命令参考
+1. 查看cpu信息	cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c
+2. 查看memory信息	free -h
+3. 查看磁盘信息	df -h
+4. 查看ip信息	ifconfig
+5. 编辑配置文件	vim /etc/profile
+6. 使修改配置文件立即生效	source /etc/profie
+7. 查看系统端口	netstat –tunlp
+8. 查看Java进程	jps –lv
+
 
 ## file
 ### linux 下文件加密压缩和解压的方法
@@ -78,5 +88,60 @@ UUID="fe869305-39ac-485b-9ffe-52a4b5785b77"
 
 ##### 启动无界面
 - vim /etc/inittab
-	+ #id:5:init default
+	+ \#id:5:init default
 	+ id:3:init default
+
+
+## 配置
+### 时间
+#### 时区
+1. date -R #查看当前时区
+2. tzselect	#修改时区
+3. timeconfig	#适用于Redhat、centos
+4. dpkg-reconfigure tzdata	#适用于Debian
+5. cp /usr/share/zoneinfo/$主时区/$次时区 /etc/localtime
+	a. cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+
+
+#### 时间
+1. date	#查看时间及日期
+2. date -s dd/MM/yy
+3. date -s HH:mm:ss
+4. hwclock -w	#将时间写入BIOS，避免重启后失效
+
+
+#### ntp
+
+
+#### crontab
+##### crontab expr
+- seconds minutes hours day-of-month month day-of-week yaer
+	+ seconds
+		+ , - * /
+	+ minutes
+		+ , - * /
+	+ hours
+		+ , - * /
+	+ day-of-month
+		+ , - * / L W C
+	+ month
+		+ , - * /
+	+ day-of-week
+		+ , - * / L C #
+	+ year 可选
+		+ , - * /
+- 符号解释
+	+ *
+		+ 代表整个时间段
+	+ /
+		+ 表示每多长时间执行一次
+		+ 0/15 每隔15分钟执行一次，即：00、 15、 30、 45
+		+ */15 每隔15分钟执行一次，从当前时间开始执行第一次
+	+ ？
+		+ 表示每月的某一天，或第几周的某一天
+	+ L
+		+ “6L”表示“每月的最后一个星期五”
+	+ W
+		+ 表示为最近工作日
+	+ \#
+		+ 是用来指定“的”每月第n个工作日
