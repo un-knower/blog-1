@@ -1794,6 +1794,25 @@ Query Results can be inserted into tables by using the insert clause.
 - like:[- table in relational db - data frame in R,Python]{but with richer optimizations under the hood}
 
 
+## 积累
+1. json数据形成dataframe,并写入spark-sql
+``` scala
+  val schema = new StructType(Array(
+    new StructField("id", LongType),
+    ...
+    ))
+
+  def write(spark: SparkSession, jsonRDD: RDD[String], tablename: String): Unit = {
+    //  schema创建并关联, 形成dataframe
+    val df = spark.read.schema(schema).json(jsonRDD)
+     
+    LOG.info(df.schema.toString())
+
+    df.write.mode(SaveMode.Append).saveAsTable(tablename)
+  }
+```
+
+
 ## 开发
 1. 编辑pom.xml文件
 ``` xml

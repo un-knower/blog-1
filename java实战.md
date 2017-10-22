@@ -35,6 +35,13 @@ export PATH=$PATH:$JAVA_HOME/bin
 3. 整体流程封装
 
 - webservice postman生成代码(核心：com.squareup.okhttp)核心逻辑
+``` xml
+  <dependency>
+      <groupId>com.squareup.okhttp</groupId>
+      <artifactId>okhttp</artifactId>
+      <version>2.7.5</version>
+  </dependency>
+```
 ``` java
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
