@@ -22,7 +22,7 @@ toc: true
 
 ### Selecting testing styles for your project
 #### FunSuite
-- 自己觉得可以推广使用
+- 自己觉得可以推广使用k
 ``` scala
     class SetSuite extends FunSuite {
       test("An empty Set should have size 0") {

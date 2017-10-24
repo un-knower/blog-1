@@ -27,6 +27,11 @@ toc: true
 ### 观点
 - R成为统计、预测分析和数据可视化的全球通用语言
 
+## 使用重点积累
+1. RStudio 提供的cheatsheet非常简洁高效的表达了某技术的特点
+    - eg: google(keywords=filetype:pdf rstudio cheatsheet)
+    - https://www.rstudio.com/wp-content/uploads/2016/03/rmarkdown-cheatsheet-2.0.pdf
+
 
 ## 环境准备
 ### 编译spark
@@ -198,8 +203,8 @@ library(ggmap)
 library(mapproj)
 
 
-# 画图
-# 因为 Google map api 不能使用，只好手动加载背景图。
+#画图
+#因为 Google map api 不能使用，只好手动加载背景图。
 
 #中国的经纬度信息
 #China <- c(left = 118, bottom = 25, right = 130, top = 32)
@@ -209,7 +214,44 @@ ggmap(Map, extent = "device") +
   geom_point(data = data, aes(x = V2, y = V1), color = "red", alpha = 0.1) 
 ```
 
+- 网络图
+``` R
+nodes <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18)
+fromNs <- c(12, 9, 5, 10, 1, 17, 14, 6, 13, 4, 10, 10, 14, 11, 12, 7, 4, 1, 15, 10)
+toNs <- c(9, 5, 10, 1, 17, 14, 7, 2, 1, 8, 16, 3, 4, 18, 4, 4, 11, 4, 2, 6)
+edges <- data.frame(fromNs, toNs)
 
+library(igraph)
+net <- graph.data.frame(edges, nodes, directed=T)
+plot(net, layout=layout_with_fr(net))
+```
+
+``` R
+#可交互的网络图
+nodes <- data.frame(id = 1:18, label = paste("n", 1:18))
+from <-
+  c(12, 9, 5, 10, 1, 17, 14, 6, 13, 4, 10, 10, 14, 11, 12, 7, 4, 1, 15, 10)
+to <-
+  c(9, 5, 10, 1, 17, 14, 7, 2, 1, 8, 16, 3, 4, 18, 4, 4, 11, 4, 2, 6)
+edges <-
+  data.frame(
+    from,
+    to,
+    arrows = c("to", "from", "middle", "middle;to"),
+    # smooth
+    smooth = c(FALSE, TRUE),
+    # shadow
+    shadow = c(FALSE, TRUE, FALSE, TRUE),
+    label = paste("e", 1:20)
+  )
+
+require(visNetwork, quietly = TRUE)
+visNetwork(nodes,
+           edges,
+           height = "1000px",
+           width = "100%",
+           main = "Network!")
+```
 
 #### 
 
@@ -221,8 +263,18 @@ install.packages("xtable")
 
 
 install.packages('maps')
-install.packages('ggmap')
+install.packages('ggmap')   #经纬度地图展现
 
+install.packages("networkD3")
+install.packages("igraph")
+install.packages("ggnet2")
+
+install.packages("threejs")
+
+install.packages("visNetwork") #可拖动的网络图R库
+
+install.packages("xlsx")    #excel file read        read.xlsx("datafile.xlsx", 1)
+install.packages("gdata")   #xls filetype excel     read.xls("datafile.xls")
 ```
 
 ## 读书纪要
