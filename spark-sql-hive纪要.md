@@ -13,10 +13,52 @@ tags:
 
 
 
+### spark2 hbase
+- [hbase-spark](https://github.com/kaidata/hbase-spark)
+- dataframe --> hbase table (catalog)
+``` scala
+  val schema = new StructType(Array(
+    new StructField("id", LongType),
+    new StructField("area", StringType),
+    new StructField("areacode", StringType)
+  }
 
+  def schema2catalog(schema: StructType, tablename: String, family: String, rowkeyCol: String): String = {
+    val buffer = new ArrayBuffer[String]()
 
+    schema.iterator.toList.filter(field => !rowkeyCol.equals(field.name)).foreach(filed => {
+      buffer.+=(s""""${filed.name}":{"cf":"${family}", "col":"${filed.name}", "type":"${filed.dataType.catalogString}"}""")
+    })
 
+    s"""{
+       |"table":{"namespace":"default", "name":"${tablename}"},
+       |"rowkey":"key",
+       |"columns":{
+       |"${rowkeyCol}":{"cf":"rowkey", "col":"key", "type":"string"},
+      ${buffer.mkString(",")}
+       |}
+       |}""".stripMargin
+  }  
 
+  def write2hbase(spark: SparkSession, jsonRDD: RDD[String], tablename: String): Unit = {
+    val df =
+      if (tablename.startsWith(PropertyConstants.TRAFFIC_DATABASE)) {
+        spark.read.schema(TrafficDataLoad.schema).json(jsonRDD)
+      } else {
+        spark.read.json(jsonRDD)
+      }
+
+    LOG.info(df.schema.toString())
+
+    val catalog = schema2catalog(TrafficDataLoad.schema, "traffic", "i", "passid")
+
+    LOG.info(catalog)
+
+    df.write.options(
+      Map(HBaseTableCatalog.tableCatalog -> catalog, HBaseTableCatalog.newTable -> "2", HBaseSparkConf.HBASE_CONFIG_LOCATION -> "hbase-site.xml", HBaseSparkConf.USE_HBASECONTEXT -> "false")
+    ).format("org.apache.hadoop.hbase.spark").save()
+  }
+```
 
 
 
