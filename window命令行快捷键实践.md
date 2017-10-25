@@ -17,3 +17,13 @@ tags:
 
 
 
+## 积累
+- 设置默认程序，针对绿色版subline text
+	+ win + R, regedit
+	+ 计算机\HKEY_CLASSES_ROOT\Applications\Sublime Text\shell\open\command
+	+ 右键{默认} --> 修改 --> 填入绿色版软件位置
+
+
+
+
+
