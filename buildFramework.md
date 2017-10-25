@@ -10,12 +10,13 @@ toc: true
 
 [TOC]
 
-### task
+### spark
+#### task
 	``` shell
 		mvn -Pyarn -Phive -Phive-thriftserver -Psparkr -Pbigtop-dist -Phadoop-2.6 -Dhadoop.version=2.6.0 -DskipTests clean package -X -e
 	```
 
-### question
+#### question
 1. 
 	``` shell
 	[INFO] BUILD FAILURE
@@ -34,10 +35,18 @@ toc: true
 	``` shell
 		export MAVEN_OPTS="-Xmx4g -XX:ReservedCodeCacheSize=512m  -XX:MaxPermSize=1024m"
 	```
+2. intelliJ terminal java 版本问题
+``` shell
+export JAVA_HOME="E:/developPlat/Java/jdk1.8.0_101"
+```
 
-### spark
+#### spark build
 1. mvn -Pyarn -Phadoop-2.6 -Dhadoop.version=2.6.0 -DskipTests clean package
 2. mvn -Pyarn -Pbigtop-dist -Phadoop-2.6 -Dhadoop.version=2.6.0 -DskipTests clean package
 3. mvn -Pyarn -Phadoop-2.4 -Dhadoop.version=2.4.0 -Phive -Phive-thriftserver -DskipTests clean package
 4. mvn -Pyarn -Phadoop-2.4 -Dscala-2.10 -DskipTests clean package
 5. 
+
+
+
+### flink
