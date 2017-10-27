@@ -11,7 +11,7 @@ tags:
 [TOC]
 
 
-
+### spark2 kafka
 
 ### spark2 hbase
 - [hbase-spark](https://github.com/kaidata/hbase-spark)
@@ -58,9 +58,50 @@ tags:
       Map(HBaseTableCatalog.tableCatalog -> catalog, HBaseTableCatalog.newTable -> "2", HBaseSparkConf.HBASE_CONFIG_LOCATION -> "hbase-site.xml", HBaseSparkConf.USE_HBASECONTEXT -> "false")
     ).format("org.apache.hadoop.hbase.spark").save()
   }
+
+  def read4hbase(spark: SparkSession, lineCount: Int = 1000): DataFrame = {
+    val catalog = schema2catalog(schema, "traffic", "i", "passid")
+
+    val df = spark
+      .read
+      .options(Map(HBaseTableCatalog.tableCatalog -> catalog, HBaseSparkConf.HBASE_CONFIG_LOCATION -> "hbase-site.xml", HBaseSparkConf.USE_HBASECONTEXT -> "false"))
+      .format("org.apache.hadoop.hbase.spark")
+      .load()
+    
+    df.printSchema()
+    df.show()
+
+    df
+  }
 ```
 
 
+### spark Dataframe
+``` scala
+  test("reduce by key") {
+    val spark = SparkSession.builder().appName(this.getClass.getSimpleName).master("local").getOrCreate()
+
+    import spark.implicits._
+    val df = Seq(("s", 1), ("b", 2), ("a", 35), ("b", 4)).toDF("key", "value")
+    df.show()
+    val dfSchema = df.schema
+    dfSchema.printTreeString()
+
+    val tmpSchema = dfSchema.add("priority", IntegerType, true)
+    val tmpRdd = df.rdd.map(row => Row.fromSeq(row.toSeq ++ Array[Int](Random.nextInt(2))))
+    val tmpDf = spark.createDataFrame(tmpRdd, tmpSchema)
+
+    tmpSchema.printTreeString()
+    tmpDf.show()
+
+    val resultRdd = tmpDf.rdd.map(row => (row.getAs[String]("key"), row)).reduceByKey((left, right) => left).map(_._2)
+    val resultDf = spark.createDataFrame(resultRdd, tmpDf.schema)
+
+    resultDf.show()
+
+    spark.stop()
+  }
+```
 
 
 ## 环境准备

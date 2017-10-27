@@ -13,6 +13,7 @@ tags:
 6. 使修改配置文件立即生效	source /etc/profie
 7. 查看系统端口	netstat –tunlp
 8. 查看Java进程	jps –lv
+9. 按需求得到ls部分信息：ls -l pathstr | awk '{print $5, $6, $7, $9}'
 
 
 ## file
