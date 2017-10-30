@@ -23,6 +23,11 @@ tags:
 	+ 计算机\HKEY_CLASSES_ROOT\Applications\Sublime Text\shell\open\command
 	+ 右键{默认} --> 修改 --> 填入绿色版软件位置
 
+- 通过文件内容搜索文件
+	+ 安装Git Bash
+	+ 执行命令： grep protoc ./*.md
+
+
 
 
 
