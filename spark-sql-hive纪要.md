@@ -10,6 +10,11 @@ tags:
 
 [TOC]
 
+## spark practice
+
+1. [下载数据集:](https://archive.ics.uci.edu/ml/machine-learning-databases/00210/donation.zip)
+2. [听歌记录数据集:](http://www.iro.umontreal.ca/~lisa/datasets/profiledata_06-May-2005.tar.gz)
+
 
 ### spark2 kafka
 
