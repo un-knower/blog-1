@@ -10,6 +10,17 @@ tags:
 
 [TOC]
 
+## spark practice
+
+1. [下载数据集:](https://archive.ics.uci.edu/ml/machine-learning-databases/00210/donation.zip)
+2. [听歌记录数据集:](http://www.iro.umontreal.ca/~lisa/datasets/profiledata_06-May-2005.tar.gz)
+
+
+### 使用总结
+1. 修改spark-sql控制台日志级别：
+  a. spark-sql --driver-java-options "-Dlog4j.debug -Dlog4j.configuration=file:///etc/SPARK/log4j.error.properties"
+
+
 
 ### spark2 kafka
 
