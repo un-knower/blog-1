@@ -1,0 +1,30 @@
+```{r eval=TRUE, echo=TRUE, tidy=TRUE, warning=FALSE, message=FALSE}
+x <- seq(-50, 50, 0.5)
+
+funGraph <- function(func, x) {
+  plot(x, func(x), type = "l")
+}
+
+# funGraph(log , x)
+# 
+# funGraph(sin , x)
+# 
+# funGraph(tan, x)
+# 
+# funGraph(exp, x)
+
+sigmoid = function(x) {
+   1 / (1 + exp(-x))
+}
+
+lkPower <- function(x) {
+  sum <- x
+  for (i in 2:5) {
+    sum <- sum + x^i
+  }
+}
+
+# funGraph(sigmoid, x)
+
+funGraph(lkPower, x)
+```

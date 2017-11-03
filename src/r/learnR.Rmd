@@ -179,5 +179,52 @@ func_name("datakai") #函数调用
   
 ***
 
+1. 条形图
+  - install.packages("vcd")
+```{r eval=TRUE, echo=TRUE, tidy=TRUE, warning=FALSE, message=FALSE}
+library(vcd)
+counts <- table(Arthritis$Improved)
+counts
+barplot(counts, main="simple bar plot", xlab = "Improvement", ylab = "Frequency") #垂直条形图
+barplot(counts, main="Horizontal Bar Plot", xlab="Frequency", ylab="Improvement", horiz=TRUE) #水平条形图
+```
 
+```{r eval=TRUE, echo=TRUE, tidy=TRUE, warning=FALSE, message=FALSE}
+library(vcd)
+counts <- table(Arthritis$Improved, Arthritis$Treatment)
+counts
+barplot(counts, main="Stacked Bar Plot", xlab="Treatment", ylab="Frequency", col=c("red", "yellow","green"), legend=rownames(counts)) #堆砌条形图
+barplot(counts, main="Grouped Bar Plot", xlab="Treatment", ylab="Frequency", col=c("red", "yellow", "green"), legend=rownames(counts), beside=TRUE) #分组条形图
+```
+
+```{r eval=TRUE, echo=TRUE, tidy=TRUE, warning=FALSE, message=FALSE}
+states <- data.frame(state.region, state.x77)
+states
+means <- aggregate(states$Illiteracy, by=list(state.region), FUN=mean)
+means
+barplot(means$x, names.arg=means$Group.1)
+title("Mean Illiteracy Rate")
+```
+
+2. 饼图
+
+3. 直方图
+```{r eval=TRUE, echo=TRUE, tidy=TRUE, warning=FALSE, message=FALSE}
+par(mfrow=c(2,2))
+hist(mtcars$mpg)
+hist(mtcars$mpg, breaks=12, col="red", xlab="Miles Per Gallon", main="Colored histogram with 12 bins")
+hist(mtcars$mpg, freq=FALSE, breaks=12, col="red", xlab="Miles Per Gallon", main="Histogram, rug plot, density curve")
+
+rug(jitter(mtcars$mpg))
+lines(density(mtcars$mpg), col="blue", lwd=2) 
+x <- mtcars$mpg
+h<-hist(x, breaks=12, col="red", xlab="Miles Per Gallon", main="Histogram with normal curve and box")
+xfit<-seq(min(x), max(x), length=40)
+yfit<-dnorm(xfit, mean=mean(x), sd=sd(x))
+yfit <- yfit*diff(h$mids[1:2])*length(x)
+lines(xfit, yfit, col="blue", lwd=2)
+box()
+```
+
+4. 
 
