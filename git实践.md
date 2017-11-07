@@ -95,6 +95,9 @@ Register a repository bookmark and exchange version history
     + git gc --prune=now
     + git gc --aggressive --prune=now
 
+##### Git中如何直接拉取代码直接覆盖不做合并
+- git fetch origin && git reset --hard origin/master
+
 
 
 
