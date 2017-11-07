@@ -10,6 +10,7 @@ value_name <- value_expre #eg: name <- kailee 标量
 y <- matrix(1:20, nrow=5, ncol=4)   #创建矩阵
 z <- array(1:24, c(4, 6))   #创建数组
                             #列表就是一些对象（或成分，component）的有序集合
+# read.xlsx2(path, sheetNum)
 ```
   + 变量重命名: fix(name)
   + 缺失值: NA #Not Available
