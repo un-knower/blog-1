@@ -257,6 +257,8 @@ visNetwork(nodes,
 
 ## 命令积累
 ``` r
+install.packages("ISLR")
+
 install.packages("ggplot2")
 install.packages("rmarkdown")
 install.packages("xtable")

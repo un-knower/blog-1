@@ -1,0 +1,58 @@
+## Introduce statistical learning by application R
+
+- 
+
+1. 安装数据集：all data sets are available in the ISLR library
+```{r eval=FALSE, tidy=TRUE}
+#install.packages("ISLR")
+#install.packages("MASS")
+```
+
+
+***
+- 2维
+```{r eval=TRUE, echo=TRUE, tidy=TRUE, warning=FALSE, message=FALSE}
+library (MASS)
+library (ISLR)
+
+plot(Boston$medv, Boston$lstat, type = "p")
+
+lm.fit = lm(Boston$medv ~ Boston$lstat , data = Boston)
+
+# lm.fit
+abline (lm.fit , lwd = 3, col = " red ")
+```
+
+- 3维
+```{r eval=TRUE, echo=TRUE, tidy=TRUE, warning=FALSE, message=FALSE}
+library (MASS)
+library (ISLR)
+
+library(scatterplot3d)
+s3d <-
+scatterplot3d(Boston$medv, Boston$lstat, Boston$age, type = "p")
+
+lm.fit = lm(Boston$medv ~ Boston$lstat + Boston$age , data = Boston)
+
+s3d$plane3d(lm.fit, draw_polygon = TRUE, col = " red ")
+```
+
+***
+- 配合spark开发 libsvm[资料](https://cran.r-project.org/web/packages/e1071/vignettes/svmdoc.pdf)
+```{r eval=TRUE, echo=TRUE, tidy=TRUE, warning=FALSE, message=FALSE}
+# install.packages("e1071")
+# install.packages("SparseM")     #Error in loadNamespace(name) : there is no package called ‘SparseM’
+library(e1071)
+# install.packages("rpart")
+library(rpart)
+
+datalist <- read.matrix.csr("E:/developPlat/openSrc/github/spark-2.2.0/data/mllib/sample_linear_regression_data.txt")
+
+#class(datalist)
+View(datalist)
+class(datalist$x)
+
+plot(datalist$x, datalist$y)
+```
+
+
