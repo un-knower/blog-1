@@ -5,6 +5,14 @@ tags:
 ---
 
 ## 使用总结
+### 数据备份
+``` shell
+#备份mysql数据库或者某张表
+mysqldump -uroot -pPASSWD vulcanus  > vulcanus.sql 
+mysqldump -uroot -pPASSWD vulcanus data_source_case> data_source_case.sql 
+mysqldump -uroot -pPASSWD vulcanus origin_table> origin_table.sql 
+```
+
 ### group by 相关
 ```
 select date_format(start_date,'%y-%m-%d'), count(*), GROUP_CONCAT(table_id SEPARATOR ' ') from data_load_pioneer group by date_format(start_date,'%y-%m-%d') order by table_id;
