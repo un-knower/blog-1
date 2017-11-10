@@ -55,4 +55,77 @@ class(datalist$x)
 plot(datalist$x, datalist$y)
 ```
 
+***
+- College data set
+```{r eval=TRUE, echo=TRUE, tidy=TRUE, warning=FALSE, message=FALSE}
+library(ISLR)
+
+# View(College)
+# fix(College)
+#summary(College)
+
+pairs(College[,1:10])
+
+plot(x = College$Outstate, y = College$Private, type = "b")
+```
+
+- Auto data set
+```{r eval=TRUE, echo=TRUE, tidy=TRUE, warning=FALSE, message=FALSE}
+library(ISLR)
+
+# View(Auto[10:85, ])
+# View(Auto[, 2:6])
+# fix(Auto)
+# summary(Auto)
+#
+# apply(Auto, 2, function(x)
+# length(unique(x)))
+
+# install.packages("psych")
+# library(psych)
+# describe(Auto)
+
+# describe(Auto[10:85, ])
+
+# apply(Auto, 2, function(x) class(x))
+# range(Auto)
+
+# pairs(Auto)
+
+plot(Auto$horsepower, Auto$mpg,  type = "p")
+
+lm1 <- lm(Auto$mpg ~ Auto$horsepower, Auto)
+
+lm1
+
+# lm.fit
+abline (lm1 , lwd = 3, col = " red ")
+```
+
+- Boston data set
+```{r eval=TRUE, echo=TRUE, tidy=TRUE, warning=FALSE, message=FALSE}
+library(MASS)
+
+View(Boston)
+
+library(sqldf)
+View(sqldf("select * from Boston where chas=1"))
+View(Boston[Boston$chas==1,])
+
+# View(Boston[10:85, ])
+# View(Boston[, 2:6])
+# fix(Boston)
+
+apply(Boston, 2, function(x) class(x))
+
+apply(Boston, 2, function(x)
+length(unique(x)))
+
+# install.packages("psych")
+library(psych)
+describe(Boston)
+
+pairs(Boston)
+```
+
 
