@@ -17,9 +17,55 @@ dataTrend <- function(tableId, con) {
     ylab = "count()",
     xlim = NULL,
     ylim = NULL,
-    type = "b",
-    main = paste("data lines tread for table: ", tableId, sep = "")
+    type = "o",
+    main = paste("data lines trend for table: ", tableId, sep = "")
   )
+}
+
+dataQualityDistribute <- function() {
+  dataQualityDist = dbGetQuery(
+    con,
+    "SELECT (missing_count/sample_count)*100 as rate FROM vulcanus_07_27.stats_general_attr_unique;"
+  )
+  
+  class(dataQualityDist)
+  class(dataQualityDist$rate)
+  
+  plot(density(na.omit(dataQualityDist$rate)), main = "dataQualityDistribute")
+  
+}
+
+dataLinesDistribute <- function() {
+  tableLines1H = dbGetQuery(
+    con,
+    "SELECT load_count FROM vulcanus_10_13.data_version_load where load_count < 100;"
+  )
+  tableLines1W = dbGetQuery(
+    con,
+    "SELECT load_count FROM vulcanus_10_13.data_version_load where load_count < 10000 and load_count >= 100;"
+  )
+  tableLines100W = dbGetQuery(
+    con,
+    "SELECT load_count FROM vulcanus_10_13.data_version_load where load_count < 1000000 and load_count >= 10000;"
+  )
+  tableLines10000W = dbGetQuery(
+    con,
+    "SELECT load_count FROM vulcanus_10_13.data_version_load where load_count < 100000000 and load_count >= 1000000;"
+  )
+  tableLines10000WPlus = dbGetQuery(
+    con,
+    "SELECT load_count FROM vulcanus_10_13.data_version_load where load_count > 100000000;"
+  )
+  
+  plot(density(tableLines1H$load_count), main = "tableLines1H")
+  
+  plot(density(tableLines1W$load_count), main = "tableLines1W")
+  
+  plot(density(tableLines100W$load_count), main = "tableLines100W")
+  
+  plot(density(tableLines10000W$load_count), main = "tableLines10000W")
+  
+  # plot(density(na.omit(tableLines10000WPlus$load_count)), main = "tableLines10000WPlus")
 }
 
 library(RMySQL)
@@ -31,6 +77,10 @@ con <-
     user = "root",
     password = "Hik12345+"
   )
+
+dataQualityDistribute()
+
+dataLinesDistribute()
 
 tableIds = dbGetQuery(
   con,

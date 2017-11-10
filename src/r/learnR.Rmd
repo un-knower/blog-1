@@ -58,7 +58,7 @@ df
 ```{r eval=TRUE, echo=TRUE, tidy=TRUE, warning=FALSE, message=FALSE}
 library(sqldf) #install.packages("sqldf"),需要打开代理
 newdf <- sqldf("select * from df where manager=1", row.names=TRUE)
-newdf
+View(newdf)
 ```
 
 ***
@@ -171,6 +171,8 @@ func_name <- function(args) {
 }
 
 func_name("datakai") #函数调用
+
+?density #函数帮助文档
 ```
 
 4. dataframe 整合与重构
