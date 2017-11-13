@@ -78,14 +78,22 @@ con <-
     password = "Hik12345+"
   )
 
+# 解决乱码问题
+dbSendQuery(con, "SET NAMES gbk;")
+dbSendQuery(con, "SET CHARACTER SET gbk;")
+dbSendQuery(con, "SET character_set_connection=gbk;")
+
 dataQualityDistribute()
 
 dataLinesDistribute()
 
 tableIds = dbGetQuery(
   con,
-  "select a.table_id from (select distinct table_id, count(*) as count FROM vulcanus_10_13.data_load_pioneer group by table_id) a where a.count > 5;"
+  #"select a.table_id from (select distinct table_id, count(*) as count FROM vulcanus_10_13.data_load_pioneer group by table_id) a where a.count > 5;"
+  "select a.table_id from (select distinct table_id, count(*) as count FROM vulcanus_10_13.data_load_pioneer group by table_id) a where a.count > 5 and a.table_id in (select distinct origin_table_id from vulcanus_10_13.o_t_table_mapping);"
 )
+
+print(paste("数据一个月条数变动5次以上，并且被目标表使用的源表有： ", tableIds, sep = ""))
 
 for (table in tableIds$table_id) {
   dataTrend(table, con)
