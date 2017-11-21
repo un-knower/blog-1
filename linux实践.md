@@ -14,6 +14,8 @@ tags:
 7. 查看系统端口	netstat –tunlp
 8. 查看Java进程	jps –lv
 9. 按需求得到ls部分信息：ls -l pathstr | awk '{print $5, $6, $7, $9}'
+10. 查看当前linux服务器分区：df -h
+11. 查看当前linux服务器硬盘：fdisk -l
 
 
 ## file
