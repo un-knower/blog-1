@@ -17,6 +17,13 @@ tags:
 10. 查看当前linux服务器分区：df -h
 11. 查看当前linux服务器硬盘：fdisk -l
 
+## linux磁盘挂载
+1. 编辑磁盘挂载信息：vi /etc/fstab 
+2. fdisk -l 列出 所有/指定 磁盘设备的分区表
+3. 查看磁盘历史挂载信息:dumpe2fs -h /dev/sda4
+
+
+
 
 ## file
 ### linux 下文件加密压缩和解压的方法
