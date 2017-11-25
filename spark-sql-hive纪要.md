@@ -19,6 +19,7 @@ tags:
 ### 使用总结
 1. 修改spark-sql控制台日志级别：
   a. spark-sql --driver-java-options "-Dlog4j.debug -Dlog4j.configuration=file:///etc/SPARK/log4j.error.properties"
+2. DataFrame 执行groupBy(colname) 结合 [UADF](https://docs.databricks.com/spark/latest/spark-sql/udaf-scala.html)实现业务需求
 
 
 
