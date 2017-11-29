@@ -227,7 +227,8 @@ A decision node enables a workflow to make a selection on the execution path to 
 1. 编译形成sharelib并压缩成tar文件
 2. 部署sharelib到hdfs上：
     ``` shell
-        ${OOZIE_HOME}bin/oozie-setup.sh sharelib create -fs hdfs://master66:8020 -locallib ./oozie-sharelib-4.1.0-cdh5.4.1.tar.gz
+        $oozie-setup.sh sharelib create -fs hdfs://master66:8020 -locallib ./
+        ${OOZIE_HOME}bin/oozie-sharelib-4.1.0-cdh5.4.1.tar.gz
         ${OOZIE_HOME}bin/oozie admin -sharelibupdate  -oozie http://localhost:11000/oozie
         ${OOZIE_HOME}bin/oozie admin -shareliblist -oozie http://localhost:11000/oozie
     ```
@@ -1357,6 +1358,427 @@ CHANGE COLUMN `execution_path` `execution_path` VARCHAR(65532) CHARACTER SET 'ut
  diagnostics: User class threw exception: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'ConfDictElemService': Injection of autowired dependencies failed; nested exception is org.springframework.beans.factory.BeanCreationException: Could not autowire field: private com.hikvision.sparta.etl.db.mappers.ConfDictElemMapper com.hikvision.sparta.etl.db.service.impl.ConfDictElemServiceImpl.confDictElemMapper; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'confDictElemMapper' defined in URL [jar:file:/mnt/ssd1/data/LOCALCLUSTER/SERVICE-HADOOP-79dbed26cf7f49729e42a75f0f84c3e7/nm/local/usercache/root/filecache/339/sparta-vulcanus-load.jar!/com/hikvision/sparta/etl/db/mappers/ConfDictElemMapper.class]: Unsatisfied dependency expressed through bean property 'sqlSessionFactory': : Error creating bean with name 'sqlSessionFactory' defined in class path resource [applicationContext-etldb.xml]: Invocation of init method failed; nested exception is org.springframework.core.NestedIOException: Failed to parse mapping resource: 'URL [jar:file:/mnt/disk1/data/LOCALCLUSTER/SERVICE-HADOOP-79dbed26cf7f49729e42a75f0f84c3e7/nm/local/usercache/root/appcache/application_1498183093431_1151/container_1498183093431_1151_02_000001/__app__.jar!/mappers/ConfDictElemMapper.xml]'; nested exception is org.apache.ibatis.builder.BuilderException: Error parsing Mapper XML. Cause: java.lang.IllegalArgumentException: Result Maps collection already contains value for com.hikvision.sparta.etl.db.mappers.ConfDictElemMapper.BaseResultMap; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'sqlSessionFactory' defined in class path resource [applicationContext-etldb.xml]: Invocation of init method failed; nested exception is org.springframework.core.NestedIOException: Failed to parse mapping resource: 'URL [jar:file:/mnt/disk1/data/LOCALCLUSTER/SERVICE-HADOOP-79dbed26cf7f49729e42a75f0f84c3e7/nm/local/usercache/root/appcache/application_1498183093431_1151/container_1498183093431_1151_02_000001/__app__.jar!/mappers/ConfDictElemMapper.xml]'; nested exception is org.apache.ibatis.builder.BuilderException: Error parsing Mapper XML. Cause: java.lang.IllegalArgumentException: Result Maps collection already contains value for com.hikvision.sparta.etl.db.mappers.ConfDictElemMapper.BaseResultMap
 ```
 
+18. val builder = SparkSession.builder().appName(appname).enableHiveSupport() 作为sparkAction 执行失败
+``` console
+java.lang.IllegalArgumentException: Error while instantiating 'org.apache.spark.sql.hive.HiveSessionState':
+	at org.apache.spark.sql.SparkSession$.org$apache$spark$sql$SparkSession$$reflect(SparkSession.scala:981)
+	at org.apache.spark.sql.SparkSession.sessionState$lzycompute(SparkSession.scala:110)
+	at org.apache.spark.sql.SparkSession.sessionState(SparkSession.scala:109)
+	at org.apache.spark.sql.SparkSession$Builder$$anonfun$getOrCreate$5.apply(SparkSession.scala:878)
+	at org.apache.spark.sql.SparkSession$Builder$$anonfun$getOrCreate$5.apply(SparkSession.scala:878)
+	at scala.collection.mutable.HashMap$$anonfun$foreach$1.apply(HashMap.scala:99)
+	at scala.collection.mutable.HashMap$$anonfun$foreach$1.apply(HashMap.scala:99)
+	at scala.collection.mutable.HashTable$class.foreachEntry(HashTable.scala:230)
+	at scala.collection.mutable.HashMap.foreachEntry(HashMap.scala:40)
+	at scala.collection.mutable.HashMap.foreach(HashMap.scala:99)
+	at org.apache.spark.sql.SparkSession$Builder.getOrCreate(SparkSession.scala:878)
+	at com.hikvision.sparta.etl.load.dataload.DataLoad$.initSpark(DataLoad.scala:192)
+	at com.hikvision.sparta.etl.load.dataload.DataLoad$.run(DataLoad.scala:24)
+	at com.hikvision.sparta.etl.load.dataload.DataLoad$.main(DataLoad.scala:19)
+	at com.hikvision.sparta.etl.load.dataload.DataLoad.main(DataLoad.scala)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.apache.spark.deploy.SparkSubmit$.org$apache$spark$deploy$SparkSubmit$$runMain(SparkSubmit.scala:738)
+	at org.apache.spark.deploy.SparkSubmit$.doRunMain$1(SparkSubmit.scala:187)
+	at org.apache.spark.deploy.SparkSubmit$.submit(SparkSubmit.scala:212)
+	at org.apache.spark.deploy.SparkSubmit$.main(SparkSubmit.scala:126)
+	at org.apache.spark.deploy.SparkSubmit.main(SparkSubmit.scala)
+	at org.apache.oozie.action.hadoop.SparkMain.runSpark(SparkMain.java:372)
+	at org.apache.oozie.action.hadoop.SparkMain.run(SparkMain.java:282)
+	at org.apache.oozie.action.hadoop.LauncherMain.run(LauncherMain.java:64)
+	at org.apache.oozie.action.hadoop.SparkMain.main(SparkMain.java:82)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.apache.oozie.action.hadoop.LauncherMapper.map(LauncherMapper.java:234)
+	at org.apache.hadoop.mapred.MapRunner.run(MapRunner.java:54)
+	at org.apache.hadoop.mapred.MapTask.runOldMapper(MapTask.java:453)
+	at org.apache.hadoop.mapred.MapTask.run(MapTask.java:343)
+	at org.apache.hadoop.mapred.LocalContainerLauncher$EventHandler.runSubtask(LocalContainerLauncher.java:388)
+	at org.apache.hadoop.mapred.LocalContainerLauncher$EventHandler.runTask(LocalContainerLauncher.java:302)
+	at org.apache.hadoop.mapred.LocalContainerLauncher$EventHandler.access$200(LocalContainerLauncher.java:187)
+	at org.apache.hadoop.mapred.LocalContainerLauncher$EventHandler$1.run(LocalContainerLauncher.java:230)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+	at org.apache.spark.sql.SparkSession$.org$apache$spark$sql$SparkSession$$reflect(SparkSession.scala:978)
+	... 44 more
+Caused by: java.lang.IllegalArgumentException: Error while instantiating 'org.apache.spark.sql.hive.HiveExternalCatalog':
+	at org.apache.spark.sql.internal.SharedState$.org$apache$spark$sql$internal$SharedState$$reflect(SharedState.scala:169)
+	at org.apache.spark.sql.internal.SharedState.<init>(SharedState.scala:86)
+	at org.apache.spark.sql.SparkSession$$anonfun$sharedState$1.apply(SparkSession.scala:101)
+	at org.apache.spark.sql.SparkSession$$anonfun$sharedState$1.apply(SparkSession.scala:101)
+	at scala.Option.getOrElse(Option.scala:121)
+	at org.apache.spark.sql.SparkSession.sharedState$lzycompute(SparkSession.scala:101)
+	at org.apache.spark.sql.SparkSession.sharedState(SparkSession.scala:100)
+	at org.apache.spark.sql.internal.SessionState.<init>(SessionState.scala:157)
+	at org.apache.spark.sql.hive.HiveSessionState.<init>(HiveSessionState.scala:32)
+	... 49 more
+Caused by: java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+	at org.apache.spark.sql.internal.SharedState$.org$apache$spark$sql$internal$SharedState$$reflect(SharedState.scala:166)
+	... 57 more
+Caused by: java.lang.NoClassDefFoundError: org/apache/hadoop/hive/conf/HiveConf$ConfVars
+	at org.apache.spark.sql.hive.HiveUtils$.hiveClientConfigurations(HiveUtils.scala:192)
+	at org.apache.spark.sql.hive.HiveUtils$.newClientForMetadata(HiveUtils.scala:269)
+	at org.apache.spark.sql.hive.HiveExternalCatalog.<init>(HiveExternalCatalog.scala:65)
+	... 62 more
+Caused by: java.lang.ClassNotFoundException: org.apache.hadoop.hive.conf.HiveConf$ConfVars
+	at java.net.URLClassLoader.findClass(URLClassLoader.java:381)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:424)
+	at sun.misc.Launcher$AppClassLoader.loadClass(Launcher.java:335)
+	at java.lang.ClassLoader.loadClass(ClassLoader.java:357)
+```
+解决办法：
+1. cd ${OOZIE_SRC_HOME}/sharelib ##最终版本
+2. vim ${OOZIE_SRC_HOME}/sharelib/spark/pom.xml
+``` xml
+<dependency>
+    <groupId>org.apache.spark</groupId>
+    <artifactId>spark-hive_2.11</artifactId>
+    <version>${spark.version}</version>
+    <scope>compile</scope>
+</dependency>
+```
+3. mvn -DskipTests clean package assembly:single
+
+19. Caused by: org.datanucleus.exceptions.NucleusUserException: The connection pool plugin of type "BONECP" was not found in the CLASSPATH!
+``` console
+java.lang.IllegalArgumentException: Error while instantiating 'org.apache.spark.sql.hive.HiveSessionState':
+	at org.apache.spark.sql.SparkSession$.org$apache$spark$sql$SparkSession$$reflect(SparkSession.scala:981)
+	at org.apache.spark.sql.SparkSession.sessionState$lzycompute(SparkSession.scala:110)
+	at org.apache.spark.sql.SparkSession.sessionState(SparkSession.scala:109)
+	at org.apache.spark.sql.SparkSession$Builder$$anonfun$getOrCreate$5.apply(SparkSession.scala:878)
+	at org.apache.spark.sql.SparkSession$Builder$$anonfun$getOrCreate$5.apply(SparkSession.scala:878)
+	at scala.collection.mutable.HashMap$$anonfun$foreach$1.apply(HashMap.scala:99)
+	at scala.collection.mutable.HashMap$$anonfun$foreach$1.apply(HashMap.scala:99)
+	at scala.collection.mutable.HashTable$class.foreachEntry(HashTable.scala:230)
+	at scala.collection.mutable.HashMap.foreachEntry(HashMap.scala:40)
+	at scala.collection.mutable.HashMap.foreach(HashMap.scala:99)
+	at org.apache.spark.sql.SparkSession$Builder.getOrCreate(SparkSession.scala:878)
+	at com.hikvision.sparta.etl.load.dataload.DataLoad$.initSpark(DataLoad.scala:192)
+	at com.hikvision.sparta.etl.load.dataload.DataLoad$.run(DataLoad.scala:24)
+	at com.hikvision.sparta.etl.load.dataload.DataLoad$.main(DataLoad.scala:19)
+	at com.hikvision.sparta.etl.load.dataload.DataLoad.main(DataLoad.scala)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.apache.spark.deploy.SparkSubmit$.org$apache$spark$deploy$SparkSubmit$$runMain(SparkSubmit.scala:738)
+	at org.apache.spark.deploy.SparkSubmit$.doRunMain$1(SparkSubmit.scala:187)
+	at org.apache.spark.deploy.SparkSubmit$.submit(SparkSubmit.scala:212)
+	at org.apache.spark.deploy.SparkSubmit$.main(SparkSubmit.scala:126)
+	at org.apache.spark.deploy.SparkSubmit.main(SparkSubmit.scala)
+	at org.apache.oozie.action.hadoop.SparkMain.runSpark(SparkMain.java:372)
+	at org.apache.oozie.action.hadoop.SparkMain.run(SparkMain.java:282)
+	at org.apache.oozie.action.hadoop.LauncherMain.run(LauncherMain.java:64)
+	at org.apache.oozie.action.hadoop.SparkMain.main(SparkMain.java:82)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.apache.oozie.action.hadoop.LauncherMapper.map(LauncherMapper.java:234)
+	at org.apache.hadoop.mapred.MapRunner.run(MapRunner.java:54)
+	at org.apache.hadoop.mapred.MapTask.runOldMapper(MapTask.java:453)
+	at org.apache.hadoop.mapred.MapTask.run(MapTask.java:343)
+	at org.apache.hadoop.mapred.LocalContainerLauncher$EventHandler.runSubtask(LocalContainerLauncher.java:388)
+	at org.apache.hadoop.mapred.LocalContainerLauncher$EventHandler.runTask(LocalContainerLauncher.java:302)
+	at org.apache.hadoop.mapred.LocalContainerLauncher$EventHandler.access$200(LocalContainerLauncher.java:187)
+	at org.apache.hadoop.mapred.LocalContainerLauncher$EventHandler$1.run(LocalContainerLauncher.java:230)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+	at java.lang.Thread.run(Thread.java:748)
+Caused by: java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+	at org.apache.spark.sql.SparkSession$.org$apache$spark$sql$SparkSession$$reflect(SparkSession.scala:978)
+	... 44 more
+Caused by: java.lang.IllegalArgumentException: Error while instantiating 'org.apache.spark.sql.hive.HiveExternalCatalog':
+	at org.apache.spark.sql.internal.SharedState$.org$apache$spark$sql$internal$SharedState$$reflect(SharedState.scala:169)
+	at org.apache.spark.sql.internal.SharedState.<init>(SharedState.scala:86)
+	at org.apache.spark.sql.SparkSession$$anonfun$sharedState$1.apply(SparkSession.scala:101)
+	at org.apache.spark.sql.SparkSession$$anonfun$sharedState$1.apply(SparkSession.scala:101)
+	at scala.Option.getOrElse(Option.scala:121)
+	at org.apache.spark.sql.SparkSession.sharedState$lzycompute(SparkSession.scala:101)
+	at org.apache.spark.sql.SparkSession.sharedState(SparkSession.scala:100)
+	at org.apache.spark.sql.internal.SessionState.<init>(SessionState.scala:157)
+	at org.apache.spark.sql.hive.HiveSessionState.<init>(HiveSessionState.scala:32)
+	... 49 more
+Caused by: java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+	at org.apache.spark.sql.internal.SharedState$.org$apache$spark$sql$internal$SharedState$$reflect(SharedState.scala:166)
+	... 57 more
+Caused by: java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+	at org.apache.spark.sql.hive.client.IsolatedClientLoader.createClient(IsolatedClientLoader.scala:264)
+	at org.apache.spark.sql.hive.HiveUtils$.newClientForMetadata(HiveUtils.scala:366)
+	at org.apache.spark.sql.hive.HiveUtils$.newClientForMetadata(HiveUtils.scala:270)
+	at org.apache.spark.sql.hive.HiveExternalCatalog.<init>(HiveExternalCatalog.scala:65)
+	... 62 more
+Caused by: java.lang.RuntimeException: java.lang.RuntimeException: Unable to instantiate org.apache.hadoop.hive.ql.metadata.SessionHiveMetaStoreClient
+	at org.apache.hadoop.hive.ql.session.SessionState.start(SessionState.java:522)
+	at org.apache.spark.sql.hive.client.HiveClientImpl.<init>(HiveClientImpl.scala:192)
+	... 70 more
+Caused by: java.lang.RuntimeException: Unable to instantiate org.apache.hadoop.hive.ql.metadata.SessionHiveMetaStoreClient
+	at org.apache.hadoop.hive.metastore.MetaStoreUtils.newInstance(MetaStoreUtils.java:1523)
+	at org.apache.hadoop.hive.metastore.RetryingMetaStoreClient.<init>(RetryingMetaStoreClient.java:86)
+	at org.apache.hadoop.hive.metastore.RetryingMetaStoreClient.getProxy(RetryingMetaStoreClient.java:132)
+	at org.apache.hadoop.hive.metastore.RetryingMetaStoreClient.getProxy(RetryingMetaStoreClient.java:104)
+	at org.apache.hadoop.hive.ql.metadata.Hive.createMetaStoreClient(Hive.java:3005)
+	at org.apache.hadoop.hive.ql.metadata.Hive.getMSC(Hive.java:3024)
+	at org.apache.hadoop.hive.ql.session.SessionState.start(SessionState.java:503)
+	... 71 more
+Caused by: java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+	at org.apache.hadoop.hive.metastore.MetaStoreUtils.newInstance(MetaStoreUtils.java:1521)
+	... 77 more
+Caused by: javax.jdo.JDOFatalInternalException: Error creating transactional connection factory
+NestedThrowables:
+java.lang.reflect.InvocationTargetException
+	at org.datanucleus.api.jdo.NucleusJDOHelper.getJDOExceptionForNucleusException(NucleusJDOHelper.java:587)
+	at org.datanucleus.api.jdo.JDOPersistenceManagerFactory.freezeConfiguration(JDOPersistenceManagerFactory.java:788)
+	at org.datanucleus.api.jdo.JDOPersistenceManagerFactory.createPersistenceManagerFactory(JDOPersistenceManagerFactory.java:333)
+	at org.datanucleus.api.jdo.JDOPersistenceManagerFactory.getPersistenceManagerFactory(JDOPersistenceManagerFactory.java:202)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at javax.jdo.JDOHelper$16.run(JDOHelper.java:1965)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at javax.jdo.JDOHelper.invoke(JDOHelper.java:1960)
+	at javax.jdo.JDOHelper.invokeGetPersistenceManagerFactoryOnImplementation(JDOHelper.java:1166)
+	at javax.jdo.JDOHelper.getPersistenceManagerFactory(JDOHelper.java:808)
+	at javax.jdo.JDOHelper.getPersistenceManagerFactory(JDOHelper.java:701)
+	at org.apache.hadoop.hive.metastore.ObjectStore.getPMF(ObjectStore.java:365)
+	at org.apache.hadoop.hive.metastore.ObjectStore.getPersistenceManager(ObjectStore.java:394)
+	at org.apache.hadoop.hive.metastore.ObjectStore.initialize(ObjectStore.java:291)
+	at org.apache.hadoop.hive.metastore.ObjectStore.setConf(ObjectStore.java:258)
+	at org.apache.hadoop.util.ReflectionUtils.setConf(ReflectionUtils.java:73)
+	at org.apache.hadoop.util.ReflectionUtils.newInstance(ReflectionUtils.java:133)
+	at org.apache.hadoop.hive.metastore.RawStoreProxy.<init>(RawStoreProxy.java:57)
+	at org.apache.hadoop.hive.metastore.RawStoreProxy.getProxy(RawStoreProxy.java:66)
+	at org.apache.hadoop.hive.metastore.HiveMetaStore$HMSHandler.newRawStore(HiveMetaStore.java:593)
+	at org.apache.hadoop.hive.metastore.HiveMetaStore$HMSHandler.getMS(HiveMetaStore.java:571)
+	at org.apache.hadoop.hive.metastore.HiveMetaStore$HMSHandler.createDefaultDB(HiveMetaStore.java:624)
+	at org.apache.hadoop.hive.metastore.HiveMetaStore$HMSHandler.init(HiveMetaStore.java:461)
+	at org.apache.hadoop.hive.metastore.RetryingHMSHandler.<init>(RetryingHMSHandler.java:66)
+	at org.apache.hadoop.hive.metastore.RetryingHMSHandler.getProxy(RetryingHMSHandler.java:72)
+	at org.apache.hadoop.hive.metastore.HiveMetaStore.newRetryingHMSHandler(HiveMetaStore.java:5762)
+	at org.apache.hadoop.hive.metastore.HiveMetaStoreClient.<init>(HiveMetaStoreClient.java:199)
+	at org.apache.hadoop.hive.ql.metadata.SessionHiveMetaStoreClient.<init>(SessionHiveMetaStoreClient.java:74)
+	... 82 more
+Caused by: java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+	at org.datanucleus.plugin.NonManagedPluginRegistry.createExecutableExtension(NonManagedPluginRegistry.java:631)
+	at org.datanucleus.plugin.PluginManager.createExecutableExtension(PluginManager.java:325)
+	at org.datanucleus.store.AbstractStoreManager.registerConnectionFactory(AbstractStoreManager.java:282)
+	at org.datanucleus.store.AbstractStoreManager.<init>(AbstractStoreManager.java:240)
+	at org.datanucleus.store.rdbms.RDBMSStoreManager.<init>(RDBMSStoreManager.java:286)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+	at org.datanucleus.plugin.NonManagedPluginRegistry.createExecutableExtension(NonManagedPluginRegistry.java:631)
+	at org.datanucleus.plugin.PluginManager.createExecutableExtension(PluginManager.java:301)
+	at org.datanucleus.NucleusContext.createStoreManagerForProperties(NucleusContext.java:1187)
+	at org.datanucleus.NucleusContext.initialise(NucleusContext.java:356)
+	at org.datanucleus.api.jdo.JDOPersistenceManagerFactory.freezeConfiguration(JDOPersistenceManagerFactory.java:775)
+	... 111 more
+Caused by: org.datanucleus.exceptions.NucleusException: Attempt to invoke the "BONECP" plugin to create a ConnectionPool gave an error : The connection pool plugin of type "BONECP" was not found in the CLASSPATH!
+	at org.datanucleus.store.rdbms.ConnectionFactoryImpl.generateDataSources(ConnectionFactoryImpl.java:259)
+	at org.datanucleus.store.rdbms.ConnectionFactoryImpl.initialiseDataSources(ConnectionFactoryImpl.java:131)
+	at org.datanucleus.store.rdbms.ConnectionFactoryImpl.<init>(ConnectionFactoryImpl.java:85)
+	... 129 more
+Caused by: org.datanucleus.exceptions.NucleusUserException: The connection pool plugin of type "BONECP" was not found in the CLASSPATH!
+	at org.datanucleus.store.rdbms.ConnectionFactoryImpl.generateDataSources(ConnectionFactoryImpl.java:234)
+	... 131 more
+```
+解决方法：
+1. Create a spark2 ShareLib directory under the Oozie ShareLib directory associated with the oozie service user:
+    a. hdfs dfs -mkdir /user/oozie/share/lib/lib_<ts>/spark2
+2. Copy local ${SPARK_HOME}/jars files the Oozie spark2 ShareLib:
+    a. hdfs dfs -put ${SPARK_HOME}/jars/* /user/oozie/share/lib/lib_<ts>/spark2/
+3. Copy the self build oozie-sharelib-spark jar file from the spark ShareLib directory to the spark2 ShareLib directory:
+    a. hdfs dfs -cp /user/oozie/share/lib/lib_<ts>/spark/oozie-sharelib-spark-<version>.jar /user/oozie/share/lib/lib_<ts>/spark2/
+4. Copy local ${SPARK_CONF_HOME}/hive-site.xml file to the spark2 ShareLib:
+    a. hdfs dfs -put ${SPARK_CONF_HOME}/hive-site.xml /user/oozie/share/lib/lib_<ts>/spark2/
+5. Copy Python libraries to the spark2 ShareLib:
+    a. hdfs dfs -put ${SPARK_HOME}/python/lib/py* /user/oozie/share/lib/lib_<ts>/spark2/
+6. Run the Oozie sharelibupdate command:
+    a. oozie admin –sharelibupdate
+
+20. 
+``` console
+Failing Oozie Launcher, Main class [org.apache.oozie.action.hadoop.SparkMain], main() threw exception, Library directory '/mnt/disk1/data/LOCALCLUSTER/SERVICE-HADOOP-79dbed26cf7f49729e42a75f0f84c3e7/nm/local/usercache/root/appcache/application_1507728269197_0432/container_1507728269197_0432_01_000001/assembly/target/scala-2.11/jars' does not exist; make sure Spark is built.
+java.lang.IllegalStateException: Library directory '/mnt/disk1/data/LOCALCLUSTER/SERVICE-HADOOP-79dbed26cf7f49729e42a75f0f84c3e7/nm/local/usercache/root/appcache/application_1507728269197_0432/container_1507728269197_0432_01_000001/assembly/target/scala-2.11/jars' does not exist; make sure Spark is built.
+    at org.apache.spark.launcher.CommandBuilderUtils.checkState(CommandBuilderUtils.java:248)
+    at org.apache.spark.launcher.CommandBuilderUtils.findJarsDir(CommandBuilderUtils.java:368)
+    at org.apache.spark.launcher.YarnCommandBuilderUtils$.findJarsDir(YarnCommandBuilderUtils.scala:38)
+    at org.apache.spark.deploy.yarn.Client.prepareLocalResources(Client.scala:547)
+    at org.apache.spark.deploy.yarn.Client.createContainerLaunchContext(Client.scala:868)
+    at org.apache.spark.deploy.yarn.Client.submitApplication(Client.scala:170)
+    at org.apache.spark.scheduler.cluster.YarnClientSchedulerBackend.start(YarnClientSchedulerBackend.scala:56)
+    at org.apache.spark.scheduler.TaskSchedulerImpl.start(TaskSchedulerImpl.scala:156)
+    at org.apache.spark.SparkContext.<init>(SparkContext.scala:509)
+    at org.apache.spark.SparkContext$.getOrCreate(SparkContext.scala:2313)
+    at org.apache.spark.sql.SparkSession$Builder$$anonfun$6.apply(SparkSession.scala:868)
+    at org.apache.spark.sql.SparkSession$Builder$$anonfun$6.apply(SparkSession.scala:860)
+    at scala.Option.getOrElse(Option.scala:121)
+    at org.apache.spark.sql.SparkSession$Builder.getOrCreate(SparkSession.scala:860)
+    at com.hikvision.sparta.etl.load.dataload.DataLoad$.initSpark(DataLoad.scala:192)
+    at com.hikvision.sparta.etl.load.dataload.DataLoad$.run(DataLoad.scala:24)
+    at com.hikvision.sparta.etl.load.dataload.DataLoad$.main(DataLoad.scala:19)
+    at com.hikvision.sparta.etl.load.dataload.DataLoad.main(DataLoad.scala)
+    at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+    at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+    at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+    at java.lang.reflect.Method.invoke(Method.java:498)
+    at org.apache.spark.deploy.SparkSubmit$.org$apache$spark$deploy$SparkSubmit$$runMain(SparkSubmit.scala:738)
+    at org.apache.spark.deploy.SparkSubmit$.doRunMain$1(SparkSubmit.scala:187)
+    at org.apache.spark.deploy.SparkSubmit$.submit(SparkSubmit.scala:212)
+    at org.apache.spark.deploy.SparkSubmit$.main(SparkSubmit.scala:126)
+    at org.apache.spark.deploy.SparkSubmit.main(SparkSubmit.scala)
+    at org.apache.oozie.action.hadoop.SparkMain.runSpark(SparkMain.java:372)
+    at org.apache.oozie.action.hadoop.SparkMain.run(SparkMain.java:282)
+    at org.apache.oozie.action.hadoop.LauncherMain.run(LauncherMain.java:64)
+    at org.apache.oozie.action.hadoop.SparkMain.main(SparkMain.java:82)
+    at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+    at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+    at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+    at java.lang.reflect.Method.invoke(Method.java:498)
+    at org.apache.oozie.action.hadoop.LauncherMapper.map(LauncherMapper.java:234)
+    at org.apache.hadoop.mapred.MapRunner.run(MapRunner.java:54)
+    at org.apache.hadoop.mapred.MapTask.runOldMapper(MapTask.java:453)
+    at org.apache.hadoop.mapred.MapTask.run(MapTask.java:343)
+    at org.apache.hadoop.mapred.LocalContainerLauncher$EventHandler.runSubtask(LocalContainerLauncher.java:388)
+    at org.apache.hadoop.mapred.LocalContainerLauncher$EventHandler.runTask(LocalContainerLauncher.java:302)
+    at org.apache.hadoop.mapred.LocalContainerLauncher$EventHandler.access$200(LocalContainerLauncher.java:187)
+    at org.apache.hadoop.mapred.LocalContainerLauncher$EventHandler$1.run(LocalContainerLauncher.java:230)
+    at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:511)
+    at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+    at java.lang.Thread.run(Thread.java:748)
+```
+解决方法：
+``` xml
+<workflow-app name="increment-load-wf" xmlns="uri:oozie:workflow:0.5">
+    <global>
+            <configuration>
+                <property>
+                    <name>mapred.compress.map.output</name>
+                    <value>true</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.mapreduce.map.memory.mb</name>
+                    <value>${map_memory_mb}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.mapreduce.map.java.opts</name>
+                    <value>${map_java_opts}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.yarn.app.mapreduce.am.resource.mb</name>
+                    <value>${am_resource_mb}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.yarn.app.mapreduce.am.command-opts</name>
+                    <value>${am_command_opts}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.mapred.job.queue.name</name>
+                    <value>default</value>
+                </property>
+                <property>
+                        <name>oozie.launcher.yarn.app.mapreduce.am.env</name>
+                        <value>SPARK_HOME=${spark_home}</value>
+                </property>
+            </configuration>
+    </global>
+    <start to='L_1'/>
+    <action name="L_1">
+        <spark xmlns="uri:oozie:spark-action:0.1">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <master>${master}</master>
+            <mode>${deploy_mode}</mode>
+            <name>L_1</name>
+            <class>${load_class_name}</class>
+            <jar>${load_jar_path}</jar>
+            <spark-opts>${spark_opts}</spark-opts>
+            <arg>--originTableId</arg>
+            <arg>1</arg>
+            <arg>--dataLoadVersion</arg>
+            <arg>1</arg>
+        </spark>
+
+        <ok to="end"/>
+        <error to="kill"/>
+    </action>
+    <kill name='kill'>
+        <message>Something went wrong: ${wf:errorCode('firstdemo')}</message>
+    </kill>
+    <end name='end'/>
+</workflow-app>
+```
+
+``` shell
+oozie.action.sharelib.for.spark=spark2
+nameNode=hdfs://master66:8020
+jobTracker=master66:18040
+queueName=default
+spark_home=/usr/lib/LOCALCLUSTER/SERVICE-SPARK-2428609d66a34df2984159ba2e2f0d35
+historyServer=http://master66:18088
+
+# 定义如何运行
+#oozie.coord.application.path=${nameNode}/dev/oozieJob/cron/incre
+oozie.wf.application.path=${nameNode}/dev/oozieJob/cron/incre
+map_memory_mb=2048
+map_java_opts=-XX:MaxPermSize=1g
+am_resource_mb=1536
+am_command_opts=-Xmx1024m
+
+start=2017-09-29T08:45+0800
+end=2017-09-29T18:00+0800
+workflowAppUri=${nameNode}/dev/oozieJob/cron/incre
+oozie.use.system.libpath=true
+
+frequency=0/30 * * * *
+master=yarn
+deploy_mode=client
+load_jar_path=/usr/local/envTch/oozieJob/increload/sparta-vulcanus-load-assembly.jar
+load_class_name=com.hikvision.sparta.etl.load.dataload.DataLoad
+spark_opts=--num-executors 3 --executor-cores 1 --executor-memory 1G --driver-memory 512m --conf spark.yarn.historyServer.address=${historyServer} --conf spark.eventLog.dir=${nameNode}/var/log/spark_hislog --conf spark.eventLog.enabled=true
+```
 
 # oozie实践文档
 
