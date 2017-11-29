@@ -122,6 +122,26 @@ http://localhost:8983/solr/admin/collections?action=CREATE&name=mapzs&numShards=
 
 ### IK分词
 #### 配置IK分词
+- $ cd ${SOLR_HOME}/server/solr/configsets/map/conf/
+  + 添加ik字段类型及字段, vim managed-schema
+  ``` xml
+  <fieldType name="text_ik" class="solr.TextField">
+    <analyzer type="index" class="org.wltea.analyzer.lucene.IKAnalyzer"/>
+    <analyzer type="query" class="org.wltea.analyzer.lucene.IKAnalyzer"/>
+  </fieldType>
+
+  <field name="ADDRESS" type="text_ik" indexed="true" stored="true"/>
+  <field name="ADMINCODE" type="text_en" multiValued="false" indexed="true" stored="true"/>
+  <field name="Address" type="text_general" indexed="true" stored="true"/>
+  <field name="GML" type="string" docValues="true" multiValued="false" indexed="true" stored="true"/>
+  <field name="HIKMAP" type="text_ik" multiValued="true" indexed="true" stored="false"/>
+  <field name="LATB" type="text_general" indexed="true" stored="true"/>
+  <field name="LNGB" type="text_general" indexed="true" stored="true"/>
+  <field name="NAME" type="text_ik" multiValued="false" indexed="true" stored="true"/>
+
+  <copyField source="ADDRESS" dest="HIKMAP"/>
+  <copyField source="NAME" dest="HIKMAP"/>
+  ```
 - $SOLR_INSTALL_HOME=E:\developPlat\solr-6.6.0
 - ik-analyzer-solr6-6.0.jar 放入${SOLR_INSTALL_HOME}\server\solr-webapp\webapp\WEB-INF\lib
     + 编辑该jar文件可修改里面的文件：IKAnalyzer.cfg.xml、ext.dic、stopword.dic

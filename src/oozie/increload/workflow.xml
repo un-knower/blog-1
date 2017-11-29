@@ -1,0 +1,98 @@
+<workflow-app name="increment-load-wf" xmlns="uri:oozie:workflow:0.5">
+    <global>
+            <configuration>
+                <property>
+                    <name>mapred.compress.map.output</name>
+                    <value>true</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.mapreduce.map.memory.mb</name>
+                    <value>${map_memory_mb}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.mapreduce.map.java.opts</name>
+                    <value>${map_java_opts}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.yarn.app.mapreduce.am.resource.mb</name>
+                    <value>${am_resource_mb}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.yarn.app.mapreduce.am.command-opts</name>
+                    <value>${am_command_opts}</value>
+                </property>
+                <property>
+                    <name>oozie.launcher.mapred.job.queue.name</name>
+                    <value>default</value>
+                </property>
+		<property>
+			<name>oozie.launcher.yarn.app.mapreduce.am.env</name>
+			<value>SPARK_HOME=${spark_home}</value>
+		</property>
+            </configuration>
+    </global>
+
+    <start to='L_1'/>
+    <action name="L_1">
+        <spark xmlns="uri:oozie:spark-action:0.1">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <master>${master}</master>
+            <mode>${deploy_mode}</mode>
+            <name>L_1</name>
+            <class>${load_class_name}</class>
+            <jar>${load_jar_path}</jar>
+            <spark-opts>${spark_opts}</spark-opts>
+            <arg>--originTableId</arg>
+            <arg>1</arg>
+            <arg>--dataLoadVersion</arg>
+            <arg>${load_version}</arg>
+        </spark>
+
+        <ok to="L_18"/>
+        <error to="kill"/>
+    </action>
+    <action name="L_18">
+        <spark xmlns="uri:oozie:spark-action:0.1">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <master>${master}</master>
+            <mode>${deploy_mode}</mode>
+            <name>L_18</name>
+            <class>${load_class_name}</class>
+            <jar>${load_jar_path}</jar>
+            <spark-opts>${spark_opts}</spark-opts>
+            <arg>--originTableId</arg>
+            <arg>18</arg>
+            <arg>--dataLoadVersion</arg>
+            <arg>${load_version}</arg>
+        </spark>
+
+        <ok to="L_22"/>
+        <error to="kill"/>
+    </action>
+    <action name="L_22">
+        <spark xmlns="uri:oozie:spark-action:0.1">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <master>${master}</master>
+            <mode>${deploy_mode}</mode>
+            <name>L_22</name>
+            <class>${load_class_name}</class>
+            <jar>${load_jar_path}</jar>
+            <spark-opts>${spark_opts}</spark-opts>
+            <arg>--originTableId</arg>
+            <arg>22</arg>
+            <arg>--dataLoadVersion</arg>
+            <arg>${load_version}</arg>
+        </spark>
+        <ok to="end"/>
+        <error to="kill"/>
+    </action>
+
+    <kill name='kill'>
+        <message>Something went wrong: ${wf:errorCode('firstdemo')}</message>
+    </kill>
+    <end name='end'/>
+
+</workflow-app>
