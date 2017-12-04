@@ -66,6 +66,12 @@ select date_format(now(),'%y-%m-%d');
     ``` sql
 
     ```
+2. com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException: Access denied for user 'vulcanus'@'10.16.146.80' to database 'vulcanus_df'
+    - 解决方案
+    ``` sql
+    SHOW GRANTS FOR 'vulcanus'@'10.16.146.80';
+    GRANT ALL PRIVILEGES ON `vulcanus_df`.* TO 'vulcanus'@'10.16.146.80'
+    ```
 
 ## MySQL 5.7 Reference Manual
 
