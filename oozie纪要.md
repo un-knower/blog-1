@@ -741,7 +741,7 @@ class WorkflowXml(appname: String, startto: String, actionsXml: String) {
       numExecutors            3
       pyFiles                 null
       archives                null
-      mainClass               com.hikvision.env.WordCount
+      mainClass               com.chaosdata.env.WordCount
       primaryResource         file:/usr/local/envtch/ooziejobs/envtest.jar
       name                    Spark wc
       childArgs               []
@@ -775,7 +775,7 @@ class WorkflowXml(appname: String, startto: String, actionsXml: String) {
     --jar
     file:/usr/local/envtch/ooziejobs/envtest.jar
     --class
-    com.hikvision.env.WordCount
+    com.chaosdata.env.WordCount
     System properties:
     spark.oozie.action.id -> 0000202-170613162811875-oozie-root-W@firstdemo
     spark.oozie.HadoopAccessorService.created -> true
@@ -892,7 +892,7 @@ class WorkflowXml(appname: String, startto: String, actionsXml: String) {
                         --name
                         Spark wc
                         --class
-                        com.hikvision.env.WordCount
+                        com.chaosdata.env.WordCount
                         --conf
                         spark.oozie.action.id=0000202-170613162811875-oozie-root-W@firstdemo
                         --conf
@@ -1236,10 +1236,10 @@ java.lang.OutOfMemoryError: PermGen space
   at org.apache.spark.sql.execution.datasources.DataSource.resolveRelation(DataSource.scala:330)
   at org.apache.spark.sql.DataFrameReader.load(DataFrameReader.scala:152)
   at org.apache.spark.sql.DataFrameReader.load(DataFrameReader.scala:125)
-  at com.hikvision.sparta.etl.load.dataload.OracleLoad$.loadTable(OracleLoad.scala:85)
-  at com.hikvision.sparta.etl.load.dataload.DataLoad$.run(DataLoad.scala:78)
-  at com.hikvision.sparta.etl.load.dataload.DataLoad$.main(DataLoad.scala:17)
-  at com.hikvision.sparta.etl.load.dataload.DataLoad.main(DataLoad.scala)
+  at com.chaosdata.sparta.etl.load.dataload.OracleLoad$.loadTable(OracleLoad.scala:85)
+  at com.chaosdata.sparta.etl.load.dataload.DataLoad$.run(DataLoad.scala:78)
+  at com.chaosdata.sparta.etl.load.dataload.DataLoad$.main(DataLoad.scala:17)
+  at com.chaosdata.sparta.etl.load.dataload.DataLoad.main(DataLoad.scala)
   at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
   at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
   at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -1355,7 +1355,7 @@ CHANGE COLUMN `execution_path` `execution_path` VARCHAR(65532) CHARACTER SET 'ut
 
 17. oozie yarn-cluster spark
 ``` console
- diagnostics: User class threw exception: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'ConfDictElemService': Injection of autowired dependencies failed; nested exception is org.springframework.beans.factory.BeanCreationException: Could not autowire field: private com.hikvision.sparta.etl.db.mappers.ConfDictElemMapper com.hikvision.sparta.etl.db.service.impl.ConfDictElemServiceImpl.confDictElemMapper; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'confDictElemMapper' defined in URL [jar:file:/mnt/ssd1/data/LOCALCLUSTER/SERVICE-HADOOP-79dbed26cf7f49729e42a75f0f84c3e7/nm/local/usercache/root/filecache/339/sparta-vulcanus-load.jar!/com/hikvision/sparta/etl/db/mappers/ConfDictElemMapper.class]: Unsatisfied dependency expressed through bean property 'sqlSessionFactory': : Error creating bean with name 'sqlSessionFactory' defined in class path resource [applicationContext-etldb.xml]: Invocation of init method failed; nested exception is org.springframework.core.NestedIOException: Failed to parse mapping resource: 'URL [jar:file:/mnt/disk1/data/LOCALCLUSTER/SERVICE-HADOOP-79dbed26cf7f49729e42a75f0f84c3e7/nm/local/usercache/root/appcache/application_1498183093431_1151/container_1498183093431_1151_02_000001/__app__.jar!/mappers/ConfDictElemMapper.xml]'; nested exception is org.apache.ibatis.builder.BuilderException: Error parsing Mapper XML. Cause: java.lang.IllegalArgumentException: Result Maps collection already contains value for com.hikvision.sparta.etl.db.mappers.ConfDictElemMapper.BaseResultMap; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'sqlSessionFactory' defined in class path resource [applicationContext-etldb.xml]: Invocation of init method failed; nested exception is org.springframework.core.NestedIOException: Failed to parse mapping resource: 'URL [jar:file:/mnt/disk1/data/LOCALCLUSTER/SERVICE-HADOOP-79dbed26cf7f49729e42a75f0f84c3e7/nm/local/usercache/root/appcache/application_1498183093431_1151/container_1498183093431_1151_02_000001/__app__.jar!/mappers/ConfDictElemMapper.xml]'; nested exception is org.apache.ibatis.builder.BuilderException: Error parsing Mapper XML. Cause: java.lang.IllegalArgumentException: Result Maps collection already contains value for com.hikvision.sparta.etl.db.mappers.ConfDictElemMapper.BaseResultMap
+ diagnostics: User class threw exception: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'ConfDictElemService': Injection of autowired dependencies failed; nested exception is org.springframework.beans.factory.BeanCreationException: Could not autowire field: private com.chaosdata.sparta.etl.db.mappers.ConfDictElemMapper com.chaosdata.sparta.etl.db.service.impl.ConfDictElemServiceImpl.confDictElemMapper; nested exception is org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'confDictElemMapper' defined in URL [jar:file:/mnt/ssd1/data/LOCALCLUSTER/SERVICE-HADOOP-79dbed26cf7f49729e42a75f0f84c3e7/nm/local/usercache/root/filecache/339/sparta-vulcanus-load.jar!/com/chaosdata/sparta/etl/db/mappers/ConfDictElemMapper.class]: Unsatisfied dependency expressed through bean property 'sqlSessionFactory': : Error creating bean with name 'sqlSessionFactory' defined in class path resource [applicationContext-etldb.xml]: Invocation of init method failed; nested exception is org.springframework.core.NestedIOException: Failed to parse mapping resource: 'URL [jar:file:/mnt/disk1/data/LOCALCLUSTER/SERVICE-HADOOP-79dbed26cf7f49729e42a75f0f84c3e7/nm/local/usercache/root/appcache/application_1498183093431_1151/container_1498183093431_1151_02_000001/__app__.jar!/mappers/ConfDictElemMapper.xml]'; nested exception is org.apache.ibatis.builder.BuilderException: Error parsing Mapper XML. Cause: java.lang.IllegalArgumentException: Result Maps collection already contains value for com.chaosdata.sparta.etl.db.mappers.ConfDictElemMapper.BaseResultMap; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'sqlSessionFactory' defined in class path resource [applicationContext-etldb.xml]: Invocation of init method failed; nested exception is org.springframework.core.NestedIOException: Failed to parse mapping resource: 'URL [jar:file:/mnt/disk1/data/LOCALCLUSTER/SERVICE-HADOOP-79dbed26cf7f49729e42a75f0f84c3e7/nm/local/usercache/root/appcache/application_1498183093431_1151/container_1498183093431_1151_02_000001/__app__.jar!/mappers/ConfDictElemMapper.xml]'; nested exception is org.apache.ibatis.builder.BuilderException: Error parsing Mapper XML. Cause: java.lang.IllegalArgumentException: Result Maps collection already contains value for com.chaosdata.sparta.etl.db.mappers.ConfDictElemMapper.BaseResultMap
 ```
 
 18. val builder = SparkSession.builder().appName(appname).enableHiveSupport() 作为sparkAction 执行失败
@@ -1372,10 +1372,10 @@ java.lang.IllegalArgumentException: Error while instantiating 'org.apache.spark.
 	at scala.collection.mutable.HashMap.foreachEntry(HashMap.scala:40)
 	at scala.collection.mutable.HashMap.foreach(HashMap.scala:99)
 	at org.apache.spark.sql.SparkSession$Builder.getOrCreate(SparkSession.scala:878)
-	at com.hikvision.sparta.etl.load.dataload.DataLoad$.initSpark(DataLoad.scala:192)
-	at com.hikvision.sparta.etl.load.dataload.DataLoad$.run(DataLoad.scala:24)
-	at com.hikvision.sparta.etl.load.dataload.DataLoad$.main(DataLoad.scala:19)
-	at com.hikvision.sparta.etl.load.dataload.DataLoad.main(DataLoad.scala)
+	at com.chaosdata.sparta.etl.load.dataload.DataLoad$.initSpark(DataLoad.scala:192)
+	at com.chaosdata.sparta.etl.load.dataload.DataLoad$.run(DataLoad.scala:24)
+	at com.chaosdata.sparta.etl.load.dataload.DataLoad$.main(DataLoad.scala:19)
+	at com.chaosdata.sparta.etl.load.dataload.DataLoad.main(DataLoad.scala)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -1469,10 +1469,10 @@ java.lang.IllegalArgumentException: Error while instantiating 'org.apache.spark.
 	at scala.collection.mutable.HashMap.foreachEntry(HashMap.scala:40)
 	at scala.collection.mutable.HashMap.foreach(HashMap.scala:99)
 	at org.apache.spark.sql.SparkSession$Builder.getOrCreate(SparkSession.scala:878)
-	at com.hikvision.sparta.etl.load.dataload.DataLoad$.initSpark(DataLoad.scala:192)
-	at com.hikvision.sparta.etl.load.dataload.DataLoad$.run(DataLoad.scala:24)
-	at com.hikvision.sparta.etl.load.dataload.DataLoad$.main(DataLoad.scala:19)
-	at com.hikvision.sparta.etl.load.dataload.DataLoad.main(DataLoad.scala)
+	at com.chaosdata.sparta.etl.load.dataload.DataLoad$.initSpark(DataLoad.scala:192)
+	at com.chaosdata.sparta.etl.load.dataload.DataLoad$.run(DataLoad.scala:24)
+	at com.chaosdata.sparta.etl.load.dataload.DataLoad$.main(DataLoad.scala:19)
+	at com.chaosdata.sparta.etl.load.dataload.DataLoad.main(DataLoad.scala)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -1654,10 +1654,10 @@ java.lang.IllegalStateException: Library directory '/mnt/disk1/data/LOCALCLUSTER
     at org.apache.spark.sql.SparkSession$Builder$$anonfun$6.apply(SparkSession.scala:860)
     at scala.Option.getOrElse(Option.scala:121)
     at org.apache.spark.sql.SparkSession$Builder.getOrCreate(SparkSession.scala:860)
-    at com.hikvision.sparta.etl.load.dataload.DataLoad$.initSpark(DataLoad.scala:192)
-    at com.hikvision.sparta.etl.load.dataload.DataLoad$.run(DataLoad.scala:24)
-    at com.hikvision.sparta.etl.load.dataload.DataLoad$.main(DataLoad.scala:19)
-    at com.hikvision.sparta.etl.load.dataload.DataLoad.main(DataLoad.scala)
+    at com.chaosdata.sparta.etl.load.dataload.DataLoad$.initSpark(DataLoad.scala:192)
+    at com.chaosdata.sparta.etl.load.dataload.DataLoad$.run(DataLoad.scala:24)
+    at com.chaosdata.sparta.etl.load.dataload.DataLoad$.main(DataLoad.scala:19)
+    at com.chaosdata.sparta.etl.load.dataload.DataLoad.main(DataLoad.scala)
     at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
     at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
     at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -1776,14 +1776,14 @@ frequency=0/30 * * * *
 master=yarn
 deploy_mode=client
 load_jar_path=/usr/local/envTch/oozieJob/increload/sparta-vulcanus-load-assembly.jar
-load_class_name=com.hikvision.sparta.etl.load.dataload.DataLoad
+load_class_name=com.chaosdata.sparta.etl.load.dataload.DataLoad
 spark_opts=--num-executors 3 --executor-cores 1 --executor-memory 1G --driver-memory 512m --conf spark.yarn.historyServer.address=${historyServer} --conf spark.eventLog.dir=${nameNode}/var/log/spark_hislog --conf spark.eventLog.enabled=true
 ```
 
 # oozie实践文档
 
 ### 通过cm安装oozie
-1. 下载编译好的oozie-bin.tar.gz lark包，eg:[下载链接](http://maven.hikvision.com.cn/nexus/content/repositories/public/com/hikvision/bigdata/archives/v1/lark-packages/oozie/)
+1. 下载编译好的oozie-bin.tar.gz lark包，eg:[下载链接](http://maven.chaosdata.com.cn/nexus/content/repositories/public/com/chaosdata/bigdata/archives/v1/lark-packages/oozie/)
 2. 将上步骤的tar文件解压放入该路径下：/usr/lib/cloudmanager/components/lark/packages
 3. 打开cm web页面 eg：[master66 cluster manager](http://10.17.139.66:8877/cm/)
 4. 依次点击 主机管理-->服务管理-->添加服务-->oozie-->服务名称前面勾选-->实例个数填1-->下一步-->部署
