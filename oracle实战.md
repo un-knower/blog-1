@@ -46,6 +46,13 @@ spark sql
 ``` scala
       val ssc = new SQLContext(sc)
       val jdbcDF = (1 to index.toInt).map(index => {
+        /**
+         * 更新options里面的sql采集语句
+         */
+        
+        /**
+         * end
+         */
         ssc.read.format("jdbc").options(
           options.getOptions
         ).load()
