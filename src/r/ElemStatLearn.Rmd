@@ -1,0 +1,24 @@
+---
+title: "ElemStatLearn"
+author: "kailee"
+date: "2017年12月19日"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r eval=TRUE, echo=TRUE, tidy=TRUE, warning=FALSE, message=FALSE}
+
+# Chapter 10 Lab 1: Principal Components Analysis
+
+if (FALSE) {
+  install.packages("ElemStatLearn")
+}
+
+if (TRUE) {
+  install.packages("MachineLearning")
+}
+
+```

@@ -21,6 +21,11 @@ tags:
   a. spark-sql --driver-java-options "-Dlog4j.debug -Dlog4j.configuration=file:///etc/SPARK/log4j.error.properties"
 2. DataFrame 执行groupBy(colname) 结合 [UADF](https://docs.databricks.com/spark/latest/spark-sql/udaf-scala.html)实现业务需求
 
+3. spark-submit 主类参数带空格实现
+``` shell
+spark-submit --master yarn-client --class com.hikvision.sparta.etl.load.dataload.DataLoad ./jars/sparta-vulcanus-load-assembly.jar "--originTableId" "5747" "--allDoneNotDo" "--castColumnStr" " a.HIK, TO_CHAR(a.RES) as RES"
+```
+
 
 
 ### spark2 kafka
@@ -2072,3 +2077,48 @@ Caused by: java.lang.NoClassDefFoundError: org/apache/hadoop/fs/CanUnbuffer
 ```
 解决方法：
 hadoop版本不一致导致，去掉项目中其他的hadoop依赖
+
+5. SPARK-20427 Issue with Spark interpreting Oracle datatype NUMBER
+``` log
+采集sql语句为： ( select HIK,RES from ( select a.HIK,a.RES, rownum as rn from ZHCX_BDQ.海康 a ) b  where b.rn between 1 AND 2147483647 ) c
+2017-12-21 09:40:54 [ERROR]: Aborting task
+java.lang.IllegalArgumentException: requirement failed: Decimal precision 40 exceeds max precision 38
+  at scala.Predef$.require(Predef.scala:224)
+  at org.apache.spark.sql.types.Decimal.set(Decimal.scala:113)
+  at org.apache.spark.sql.types.Decimal$.apply(Decimal.scala:426)
+  at org.apache.spark.sql.execution.datasources.jdbc.JdbcUtils$$anonfun$org$apache$spark$sql$execution$datasources$jdbc$JdbcUtils$$makeGetter$3$$anonfun$9.apply(JdbcUtils.scala:350)
+  at org.apache.spark.sql.execution.datasources.jdbc.JdbcUtils$$anonfun$org$apache$spark$sql$execution$datasources$jdbc$JdbcUtils$$makeGetter$3$$anonfun$9.apply(JdbcUtils.scala:350)
+  at org.apache.spark.sql.execution.datasources.jdbc.JdbcUtils$.org$apache$spark$sql$execution$datasources$jdbc$JdbcUtils$$nullSafeConvert(JdbcUtils.scala:451)
+  at org.apache.spark.sql.execution.datasources.jdbc.JdbcUtils$$anonfun$org$apache$spark$sql$execution$datasources$jdbc$JdbcUtils$$makeGetter$3.apply(JdbcUtils.scala:350)
+  at org.apache.spark.sql.execution.datasources.jdbc.JdbcUtils$$anonfun$org$apache$spark$sql$execution$datasources$jdbc$JdbcUtils$$makeGetter$3.apply(JdbcUtils.scala:348)
+  at org.apache.spark.sql.execution.datasources.jdbc.JdbcUtils$$anon$1.getNext(JdbcUtils.scala:299)
+  at org.apache.spark.sql.execution.datasources.jdbc.JdbcUtils$$anon$1.getNext(JdbcUtils.scala:281)
+  at org.apache.spark.util.NextIterator.hasNext(NextIterator.scala:73)
+  at org.apache.spark.util.CompletionIterator.hasNext(CompletionIterator.scala:32)
+  at org.apache.spark.sql.catalyst.expressions.GeneratedClass$GeneratedIterator.processNext(Unknown Source)
+  at org.apache.spark.sql.execution.BufferedRowIterator.hasNext(BufferedRowIterator.java:43)
+  at org.apache.spark.sql.execution.WholeStageCodegenExec$$anonfun$8$$anon$1.hasNext(WholeStageCodegenExec.scala:377)
+  at scala.collection.Iterator$$anon$11.hasNext(Iterator.scala:408)
+  at scala.collection.Iterator$$anon$11.hasNext(Iterator.scala:408)
+  at scala.collection.Iterator$$anon$11.hasNext(Iterator.scala:408)
+  at scala.collection.Iterator$$anon$11.hasNext(Iterator.scala:408)
+  at org.apache.spark.rdd.PairRDDFunctions$$anonfun$saveAsHadoopDataset$1$$anonfun$13$$anonfun$apply$7.apply$mcV$sp(PairRDDFunctions.scala:1210)
+  at org.apache.spark.rdd.PairRDDFunctions$$anonfun$saveAsHadoopDataset$1$$anonfun$13$$anonfun$apply$7.apply(PairRDDFunctions.scala:1210)
+  at org.apache.spark.rdd.PairRDDFunctions$$anonfun$saveAsHadoopDataset$1$$anonfun$13$$anonfun$apply$7.apply(PairRDDFunctions.scala:1210)
+  at org.apache.spark.util.Utils$.tryWithSafeFinallyAndFailureCallbacks(Utils.scala:1341)
+  at org.apache.spark.rdd.PairRDDFunctions$$anonfun$saveAsHadoopDataset$1$$anonfun$13.apply(PairRDDFunctions.scala:1218)
+  at org.apache.spark.rdd.PairRDDFunctions$$anonfun$saveAsHadoopDataset$1$$anonfun$13.apply(PairRDDFunctions.scala:1197)
+  at org.apache.spark.scheduler.ResultTask.runTask(ResultTask.scala:87)
+  at org.apache.spark.scheduler.Task.run(Task.scala:99)
+  at org.apache.spark.executor.Executor$TaskRunner.run(Executor.scala:282)
+  at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1145)
+  at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:615)
+  at java.lang.Thread.run(Thread.java:744)
+```
+解决方案：
+
+``` log
+采集sql语句为： ( select HIK,RES from ( select a.HIK, TO_CHAR(a.RES) as RES, rownum as rn from ZHCX_BDQ.海康 a ) b  where b.rn between 1 AND 2147483647 ) c
+```
+
+

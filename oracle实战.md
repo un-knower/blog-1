@@ -22,6 +22,10 @@ toc: true
 ```
 
 
+
+
+
+
 oracle分页
 ``` scala
 
@@ -67,7 +71,100 @@ spark sql
       def unionTableReducer: (DataFrame, DataFrame) => DataFrame = (x: DataFrame, y: DataFrame) => x.union(y)
 ```
 
+#### oracle session 内存监控
+``` sql
+SELECT
+    TO_CHAR(
+        ssn.sid,
+        '9999'
+    )
+     || ' - '
+     || nvl(
+        ssn.username,
+        nvl(
+            bgp.name,
+            'background'
+        )
+    )
+     || nvl(
+        lower(ssn.machine),
+        ins.host_name
+    ) "SESSION",
+    TO_CHAR(
+        prc.spid,
+        '999999999'
+    ) "PID/THREAD",
+    TO_CHAR(
+        (se1.value / 1024) / 1024,
+        '999G999G990D00'
+    )
+     || ' MB' " CURRENT SIZE",
+    TO_CHAR(
+        (se2.value / 1024) / 1024,
+        '999G999G990D00'
+    )
+     || ' MB' " MAXIMUM SIZE"
+FROM
+    v$sesstat se1,
+    v$sesstat se2,
+    v$session ssn,
+    v$bgprocess bgp,
+    v$process prc,
+    v$instance ins,
+    v$statname stat1,
+    v$statname stat2
+WHERE
+        se1.statistic# = stat1.statistic#
+    AND
+        stat1.name = 'session pga memory'
+    AND
+        se2.statistic# = stat2.statistic#
+    AND
+        stat2.name = 'session pga memory max'
+    AND
+        se1.sid = ssn.sid
+    AND
+        se2.sid = ssn.sid
+    AND
+        ssn.paddr = bgp.paddr (+)
+    AND
+        ssn.paddr = prc.addr (+);
+```
 
+#### oracle NUMBER
+``` sql
+alter table "ZHCX_BDQ"."海康" modify(RES number(*, 100) not null);
+```
+  number类型的语法很简单,就是：
+    number(p,s)
+    p,s都是可选的，假如都不填，p默认为38，s默认为-48~127。
+    1. 精度（precision），或总位数。默认情况下，精度为38位，取值范围是1～38之间。也可以用字符*表示38。
+    2. 小数位置（scale），或小数点右边的位数。小数位数的合法值为-48～127，其默认值取决于是否指定了精度。如果没有知道精度，小数位数则默认有最大的取值区间。如果指定了精度，小数位数默认为0（小数点右边一位都没有）。例如，定义为NUMBER的列会存储浮点数（有小数），而NUMBER(38)只存储整数数据（没有小数），因为在第二种情况下小数位数默认为0.
+
+    如下SQL语句：
+      create table t ( msg varchar2(12.), num_col number(5,2) );
+      insert into t (msg,num_col) values ( '123.456', 123.456 );//执行成功，保存的是123.46
+      insert into t (msg,num_col) values ( '1234', 1234 );//执行失败，要保留2位小数，那么整数位最多3位，现在是4位。
+ 
+    如果scale是负数怎么样，表示左边整数位舍入几位：
+      create table t ( msg varchar2(12.), num_col number(5,-2) );
+      insert into t (msg,num_col) values ( '123.45', 123.45 );//执行成功，保存的是100
+      insert into t (msg,num_col) values ( '123.456', 123.456 );//执行成功，保存的是100
+ 
+   其他数据类型：
+     1. NUMERIC(p,s)：完全映射至NUMBER(p,s)。如果p未指定，则默认为38.
+     2. DECIMAL(p,s)或DEC(p,s)：完全映射至NUMBER(p,s)。如果p为指定，则默认为38.
+     3. INTEGER或INT：完全映射至NUMBER(38)类型。
+     4. SMALLINT：完全映射至NUMBER(38)类型。
+     5. FLOAT(b)：映射至NUMBER类型。
+     6. DOUBLE PRECISION：映射至NUMBER类型。
+     7. REAL：映射至NUMBER类型。
+ 
+   性能考虑：
+     一般而言，Oracle NUMBER类型对大多数应用来讲都是最佳的选择。不过，这个类型会带来一些性能影响。Oracle NUMBER类型是一种软件数据类型，在Oracle软件本身中实现。我们不能使用固有硬件操作将两个NUMBER类型相加，这要在软件中模拟。不过，浮点数没有这种实现。将两个浮点数相加时，Oracle会使用硬件来执行运算。
+     换而言之，将一些列的number列相加，没有将一系列float列相加来得快。因为float列的精度低很多，一般是6~12位。
+     比如：select sum(ln(cast( num_type as binary_double ) )) from t
+     比：select sum(ln(cast( num_type) )) from t 要快很多。
 
 #### oracle rowid
 
