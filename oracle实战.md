@@ -9,6 +9,35 @@ toc: true
 
 [TOC]
 
+## Performance Tuning
+### 手动ORACLE数据库导出AWR报告方法记录
+1. 配置概要
+  a. ORACLE_INSTALL_HOEM=/u01/app/oracle/product/11.2.0/xe/
+  b. http port:28080
+  c. monitor port:1521
+2. STEPS
+``` shell
+cd ${ORACLE_INSTALL_HOEM}
+sqlplus 
+sys/learning12345 as sysdba
+@?/rdbms/admin/awrrpt.sql
+-- 1. 确定awr生成格式
+-- 2. 报告涉及天数
+-- 3. 输入开始和结束的snapshot编号
+-- 4. 确定awr名称
+```
+
+### 生成AWR、ASH、ADDM、AWRINFO报告脚本
+``` sql
+@?rdbms/admin/awrrpt.sql是以前statspack的扩展，收集信息更详细，查看长期的数据库情况。
+@?rdbms/admin/ashrpt.sql查看当前的数据库情况，因为ash是每秒从v$session进行进行取样，awr收集的数据要比ash多得多。
+-- 一般收集数据库信息的话要结合awr和ash。
+@?rdbms/admin/addmrpt .sql相当于是驻留在oracle里的一位专家，是一个自我诊断引擎。产生symptom，problem，infomation，提供解决问题的建议，并自动修复一些具体的故障。
+@?rdbms/admin/awrinfo.sql显示的都是awr的相关信息，包括快照信息、sysaux空间使用、awr组件、ash等信息。
+```
+
+
+
 异常现象：
 ``` shell
     ORA-28000: the account is locked
