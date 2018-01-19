@@ -392,3 +392,142 @@ override def getCatalystType(
     answer
   }
 ```
+
+### 密度侦测
+``` scala
+package com.chaosdata.etl.load.density
+
+import java.sql.Connection
+import java.text.SimpleDateFormat
+import java.util.Date
+
+import com.chaosdata.etl.db.model.DataSourceCase
+import com.chaosdata.etl.load.meta.MetaDataService
+import com.twitter.util.Time
+import oracle.jdbc.pool.OracleDataSource
+import org.slf4j.LoggerFactory
+
+import scala.collection.mutable
+import scala.collection.mutable.ArrayBuffer
+
+
+object DataDensityAnalysis {
+  private val LOG = LoggerFactory.getLogger(this.getClass)
+  val sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+
+  /**
+    * 执行入口
+    *
+    * @param tableId
+    * @param startDate
+    * @param endDate
+    * @param limitCount
+    * @param column
+    * @return
+    */
+  def run(tableId: String, startDate: Date, endDate: Date, limitCount: Long, column: String): ArrayBuffer[(String, String, String, String, Long, String)] = {
+    val resultBufeer: mutable.ArrayBuffer[(String, String, Date, Date, Long)] = new ArrayBuffer[(String, String, Date, Date, Long)]
+
+    val (dsc, table, ds) = MetaDataService.loadInfoByTableId(tableId.toInt)
+    val (conn, owner) = getConn(dsc = dsc)
+
+    analysis(conn = conn, id = table.getOriginTableId.toString, tablename = table.getOriginTableName, owner = owner, startDate = startDate, endDate = endDate, limitCount = limitCount, resultList = resultBufeer, column = column)
+
+    closeConn(conn)
+
+    val result = resultBufeer.map(infos => (infos._1, infos._2, sdf.format(infos._3), sdf.format(infos._4), infos._5, s"where ${column} >= TO_DATE('${sdf.format(infos._3)}', 'yyyy-mm-dd hh24:mi:ss') AND ${column} < TO_DATE('${sdf.format(infos._4)}', 'yyyy-mm-dd hh24:mi:ss')"))
+
+    LOG.info(result.mkString("\n"))
+
+    result
+  }
+
+  def runRetWhereSql(tableId: String, startDate: Date, endDate: Date, limitCount: Long, column: String): ArrayBuffer[String] = {
+    run(tableId = tableId, startDate = startDate, endDate = endDate, limitCount = limitCount, column = column).map(_._6)
+  }
+
+  /**
+    * 分析数据列密度
+    *
+    * @param conn
+    * @param id
+    * @param tablename
+    * @param owner
+    * @param startDate
+    * @param endDate
+    * @param limitCount
+    * @param resultList
+    * @param column
+    */
+  def analysis(conn: Connection, id: String, tablename: String, owner: String, startDate: Date, endDate: Date, limitCount: Long, resultList: mutable.ArrayBuffer[(String, String, Date, Date, Long)], column: String = "ETLTIME"): Unit = {
+    val (count, countSql) = queryTableCount(tablename = tablename, owner = owner, conn = conn, startDate = startDate, endDate = endDate, column = column)
+
+    if (count > limitCount) {
+      if (startDate.getTime == endDate.getTime) {
+        LOG.info(s"该sql语句为：$countSql , 结果条数为：$count")
+        resultList.+=((id, tablename, startDate, endDate, count))
+
+        return
+      } else {
+        val newDate = Time.fromMilliseconds((startDate.getTime + endDate.getTime) / 2)
+        // 递归
+        analysis(conn = conn, id = id, tablename = tablename, owner = owner, startDate = startDate, endDate = newDate.toDate, limitCount = limitCount, resultList = resultList, column = column)
+        analysis(conn = conn, id = id, tablename = tablename, owner = owner, startDate = newDate.toDate, endDate = endDate, limitCount = limitCount, resultList = resultList, column = column)
+      }
+    } else if (count != 0) {
+      resultList.+=((id, tablename, startDate, endDate, count))
+
+      return
+    } else {
+      /**
+        * do somnething
+        */
+      LOG.info(s"当前表查询条数为 0， 查询语句为：${countSql}")
+
+      return
+    }
+  }
+
+  /**
+    * 查询数据条数
+    *
+    * @param tablename
+    * @param owner
+    * @param conn
+    * @param startDate
+    * @param endDate
+    * @param column
+    * @return
+    */
+  private def queryTableCount(tablename: String, owner: String, conn: Connection, startDate: Date, endDate: Date, column: String): (Long, String) = {
+    val countSql = genStatsCountSql(tablename = tablename, owner = owner, startDate = startDate, endDate = endDate, column = column)
+    //    LOG.info(countSql)
+    val result = conn.createStatement().executeQuery(countSql)
+    val count = if (!result.next()) 0 else result.getLong(1)
+
+    /**
+      * ORA-01000: maximum open cursors exceeded
+      * Cursor leak: The applications is not closing ResultSets (in JDBC) or cursors (in stored procedures on the database)
+      */
+    result.close()
+
+    (count, countSql)
+  }
+
+  /**
+    * 生成统计条数查询语句
+    *
+    * @param tablename
+    * @param owner
+    * @param startDate
+    * @param endDate
+    * @param column
+    * @return
+    */
+  private def genStatsCountSql(tablename: String, owner: String, startDate: Date, endDate: Date, column: String): String = {
+    // 生成sql 统计语句
+    s"select count(*) from ${owner}.${tablename} where ${column} >= TO_DATE('${sdf.format(startDate)}', 'yyyy-mm-dd hh24:mi:ss') AND ${column} < TO_DATE('${sdf.format(endDate)}', 'yyyy-mm-dd hh24:mi:ss')"
+  }
+}
+
+```
