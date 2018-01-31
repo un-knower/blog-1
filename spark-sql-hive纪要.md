@@ -26,6 +26,10 @@ tags:
 spark-submit --master yarn-client --class com.hikvision.sparta.etl.load.dataload.DataLoad ./jars/sparta-vulcanus-load-assembly.jar "--originTableId" "5747" "--allDoneNotDo" "--castColumnStr" " a.HIK, TO_CHAR(a.RES) as RES"
 ```
 
+4. spark结果输出目录覆盖写逻辑配置
+``` shell
+	builder.config("spark.hadoop.validateOutputSpecs", "false")
+```
 
 
 ### spark2 kafka
