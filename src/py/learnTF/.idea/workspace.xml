@@ -11,91 +11,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="HelloPython.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/com/chaosdata/deeplearning/learn/python/HelloPython.py">
+      <file leaf-file-name="naive_bayes_demo.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn/naivebayes/naive_bayes_demo.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="76">
-              <caret line="4" column="0" lean-forward="false" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="PyBasic.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/com/chaosdata/deeplearning/learn/python/PyBasic.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="480">
-              <caret line="53" column="17" lean-forward="false" selection-start-line="53" selection-start-column="17" selection-end-line="53" selection-end-column="17" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="plot_cv_predict.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn/plot_cv_predict.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="437">
-              <caret line="23" column="0" lean-forward="true" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
-              <folding>
-                <element signature="e#15#43#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="plot_feature_stacker.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn/plot_feature_stacker.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="461">
-              <caret line="26" column="0" lean-forward="true" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
-              <folding>
-                <element signature="e#15#66#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="plot_digits_pipe.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn/plot_digits_pipe.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
-              <caret line="41" column="0" lean-forward="false" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="10" />
-              <folding>
-                <element signature="e#31#49#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="plot_isotonic_regression.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn/plot_isotonic_regression.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="461">
-              <caret line="34" column="0" lean-forward="false" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="10" />
-              <folding>
-                <element signature="e#31#49#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="plot_missing_values.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn/plot_missing_values.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="684">
-              <caret line="36" column="25" lean-forward="true" selection-start-line="36" selection-start-column="25" selection-end-line="36" selection-end-column="25" />
-              <folding>
-                <element signature="e#16#34#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="base.py" pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python35/Lib/site-packages/sklearn/datasets/base.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="356">
-              <caret line="519" column="36" lean-forward="true" selection-start-line="519" selection-start-column="36" selection-end-line="519" selection-end-column="36" />
+            <state relative-caret-position="304">
+              <caret line="16" column="0" lean-forward="true" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -129,13 +49,14 @@
         <option value="$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn/plot_digits_pipe.py" />
         <option value="$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn/plot_isotonic_regression.py" />
         <option value="$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn/plot_missing_values.py" />
+        <option value="$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn/naivebayes/naive_bayes_demo.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="766" />
-    <option name="width" value="1010" />
-    <option name="height" value="1010" />
+  <component name="ProjectFrameBounds" extendedState="1">
+    <option name="x" value="979" />
+    <option name="width" value="936" />
+    <option name="height" value="1040" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -172,7 +93,6 @@
     </navigator>
     <panes>
       <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -215,11 +135,30 @@
               <item name="learn" type="462c0819:PsiDirectoryNode" />
               <item name="sklearn" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="learnTF" type="b2602c69:ProjectViewProjectNode" />
+              <item name="learnTF" type="462c0819:PsiDirectoryNode" />
+              <item name="com" type="462c0819:PsiDirectoryNode" />
+              <item name="chaosdata" type="462c0819:PsiDirectoryNode" />
+              <item name="deeplearning" type="462c0819:PsiDirectoryNode" />
+              <item name="learn" type="462c0819:PsiDirectoryNode" />
+              <item name="sklearn" type="462c0819:PsiDirectoryNode" />
+              <item name="naivebayes" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scratches" />
     </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\developPlat\blog\source\_posts\src\py\learnTF\com\chaosdata\deeplearning\learn\sklearn\example" />
+    </key>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -233,20 +172,20 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.plot_missing_values">
-    <configuration name="plot_cv_predict" type="PythonConfigurationType" factoryName="Python" temporary="true">
+  <component name="RunManager" selected="Python.naive_bayes_demo">
+    <configuration name="naive_bayes_demo" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn/naivebayes" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="learnTF" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn/plot_cv_predict.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn/naivebayes/naive_bayes_demo.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -263,7 +202,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="learnTF" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn/plot_digits_pipe.py" />
+      <option name="SCRIPT_NAME" value="E:\developPlat\blog\source\_posts\src\py\learnTF\com\chaosdata\deeplearning\learn\sklearn\example\plot_digits_pipe.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -280,7 +219,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="learnTF" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn/plot_feature_stacker.py" />
+      <option name="SCRIPT_NAME" value="E:\developPlat\blog\source\_posts\src\py\learnTF\com\chaosdata\deeplearning\learn\sklearn\example\plot_feature_stacker.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -297,7 +236,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="learnTF" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn/plot_isotonic_regression.py" />
+      <option name="SCRIPT_NAME" value="E:\developPlat\blog\source\_posts\src\py\learnTF\com\chaosdata\deeplearning\learn\sklearn\example\plot_isotonic_regression.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -314,25 +253,25 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="learnTF" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn/plot_missing_values.py" />
+      <option name="SCRIPT_NAME" value="E:\developPlat\blog\source\_posts\src\py\learnTF\com\chaosdata\deeplearning\learn\sklearn\example\plot_missing_values.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
     </configuration>
     <list size="5">
-      <item index="0" class="java.lang.String" itemvalue="Python.plot_cv_predict" />
-      <item index="1" class="java.lang.String" itemvalue="Python.plot_feature_stacker" />
-      <item index="2" class="java.lang.String" itemvalue="Python.plot_digits_pipe" />
-      <item index="3" class="java.lang.String" itemvalue="Python.plot_isotonic_regression" />
-      <item index="4" class="java.lang.String" itemvalue="Python.plot_missing_values" />
+      <item index="0" class="java.lang.String" itemvalue="Python.plot_feature_stacker" />
+      <item index="1" class="java.lang.String" itemvalue="Python.plot_digits_pipe" />
+      <item index="2" class="java.lang.String" itemvalue="Python.plot_isotonic_regression" />
+      <item index="3" class="java.lang.String" itemvalue="Python.plot_missing_values" />
+      <item index="4" class="java.lang.String" itemvalue="Python.naive_bayes_demo" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.plot_missing_values" />
-        <item index="1" class="java.lang.String" itemvalue="Python.plot_isotonic_regression" />
-        <item index="2" class="java.lang.String" itemvalue="Python.plot_digits_pipe" />
-        <item index="3" class="java.lang.String" itemvalue="Python.plot_feature_stacker" />
-        <item index="4" class="java.lang.String" itemvalue="Python.plot_cv_predict" />
+        <item index="0" class="java.lang.String" itemvalue="Python.naive_bayes_demo" />
+        <item index="1" class="java.lang.String" itemvalue="Python.plot_missing_values" />
+        <item index="2" class="java.lang.String" itemvalue="Python.plot_isotonic_regression" />
+        <item index="3" class="java.lang.String" itemvalue="Python.plot_digits_pipe" />
+        <item index="4" class="java.lang.String" itemvalue="Python.plot_feature_stacker" />
       </list>
     </recent_temporary>
   </component>
@@ -350,14 +289,14 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="766" y="0" width="1010" height="1010" extended-state="0" />
+    <frame x="979" y="0" width="936" height="1040" extended-state="1" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24526316" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3028169" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3405467" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33958104" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -380,6 +319,80 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/com/chaosdata/deeplearning/learn/python/HelloPython.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="76">
+          <caret line="4" column="0" lean-forward="false" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn/example/plot_cv_predict.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="380">
+          <caret line="23" column="0" lean-forward="true" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+          <folding>
+            <element signature="e#15#43#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/com/chaosdata/deeplearning/learn/python/PyBasic.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1007">
+          <caret line="53" column="17" lean-forward="false" selection-start-line="53" selection-start-column="17" selection-end-line="53" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn/example/plot_feature_stacker.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="399">
+          <caret line="26" column="0" lean-forward="true" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
+          <folding>
+            <element signature="e#15#66#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn/example/plot_digits_pipe.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="684">
+          <caret line="41" column="0" lean-forward="false" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="10" />
+          <folding>
+            <element signature="e#31#49#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn/example/plot_isotonic_regression.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="532">
+          <caret line="34" column="0" lean-forward="false" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="10" />
+          <folding>
+            <element signature="e#31#49#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python35/Lib/site-packages/sklearn/datasets/base.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="9557">
+          <caret line="519" column="36" lean-forward="true" selection-start-line="519" selection-start-column="36" selection-end-line="519" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn/example/plot_missing_values.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="589">
+          <caret line="36" column="25" lean-forward="true" selection-start-line="36" selection-start-column="25" selection-end-line="36" selection-end-column="25" />
+          <folding>
+            <element signature="e#16#34#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/com/chaosdata/deeplearning/learn/python/HelloPython.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -433,67 +446,75 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/com/chaosdata/deeplearning/learn/python/PyBasic.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="480">
+        <state relative-caret-position="1007">
           <caret line="53" column="17" lean-forward="false" selection-start-line="53" selection-start-column="17" selection-end-line="53" selection-end-column="17" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn/plot_cv_predict.py">
+    <entry file="file://$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn/example/plot_cv_predict.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="437">
-          <caret line="23" column="0" lean-forward="true" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+        <state relative-caret-position="380">
+          <caret line="23" column="0" lean-forward="false" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
           <folding>
-            <element signature="e#15#43#0" expanded="true" />
+            <element signature="e#15#43#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn/plot_feature_stacker.py">
+    <entry file="file://$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn/example/plot_feature_stacker.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="461">
-          <caret line="26" column="0" lean-forward="true" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
+        <state relative-caret-position="399">
+          <caret line="26" column="0" lean-forward="false" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
           <folding>
-            <element signature="e#15#66#0" expanded="true" />
+            <element signature="e#15#66#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python35/Lib/site-packages/sklearn/datasets/base.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="356">
-          <caret line="519" column="36" lean-forward="true" selection-start-line="519" selection-start-column="36" selection-end-line="519" selection-end-column="36" />
+        <state relative-caret-position="9557">
+          <caret line="519" column="36" lean-forward="false" selection-start-line="519" selection-start-column="36" selection-end-line="519" selection-end-column="36" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn/plot_digits_pipe.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="41" column="0" lean-forward="false" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="10" />
-          <folding>
-            <element signature="e#31#49#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn/plot_isotonic_regression.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="461">
-          <caret line="34" column="0" lean-forward="false" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="10" />
-          <folding>
-            <element signature="e#31#49#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn/plot_missing_values.py">
+    <entry file="file://$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn/example/plot_digits_pipe.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="684">
-          <caret line="36" column="25" lean-forward="true" selection-start-line="36" selection-start-column="25" selection-end-line="36" selection-end-column="25" />
+          <caret line="41" column="0" lean-forward="false" selection-start-line="41" selection-start-column="0" selection-end-line="41" selection-end-column="10" />
           <folding>
-            <element signature="e#16#34#0" expanded="true" />
+            <element signature="e#31#49#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn/example/plot_isotonic_regression.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="532">
+          <caret line="34" column="0" lean-forward="false" selection-start-line="34" selection-start-column="0" selection-end-line="34" selection-end-column="10" />
+          <folding>
+            <element signature="e#31#49#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn/example/plot_missing_values.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+          <folding>
+            <element signature="e#16#34#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/com/chaosdata/deeplearning/learn/sklearn/naivebayes/naive_bayes_demo.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="304">
+          <caret line="16" column="0" lean-forward="true" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
