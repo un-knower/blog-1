@@ -114,6 +114,8 @@ library(MASS)
 
 View(Boston)
 
+plot(Boston)
+
 library(sqldf)
 View(sqldf("select * from Boston where chas=1"))
 View(Boston[Boston$chas==1,])
